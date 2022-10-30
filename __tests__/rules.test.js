@@ -31,7 +31,6 @@ describe("rule endpoint", () => {
       id: expect.any(Number),
       name: "rule3" + currentTime,
       new_value: "new_value3",
-      notation: null,
       operator: "lower_then",
       scope: expect.any(String),
       value: expect.any(String),
@@ -40,7 +39,6 @@ describe("rule endpoint", () => {
       .post(url)
       .send({
         name: "rule3" + currentTime,
-        notation: null,
         field_name: "field_name3",
         operator: "lower_then",
         connection: "and",
@@ -88,7 +86,7 @@ describe("rule endpoint", () => {
       id: 3,
       name: expect.any(String),
       new_value: "new_value3",
-      notation: null,
+      object_notation: null,
       operator: "lower_then",
       scope: expect.any(String),
       updated_at: null,
@@ -126,9 +124,10 @@ matchObject = {
   id: 1,
   name: expect.any(String),
   new_value: "new_value1",
-  notation: null,
+  object_notation: null,
   operator: "lower_then",
   scope: expect.any(String),
   updated_at: expect.any(String),
   value: expect.any(String),
+  value_type: expect.any(String),
 };

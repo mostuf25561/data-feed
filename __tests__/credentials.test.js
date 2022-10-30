@@ -11,7 +11,7 @@ const connections = require("./setup/connections");
 let matchObject;
 
 const request = supertest(app);
-const url = "/api/feeds";
+const url = "/api/credentials";
 const currentTime = new Date().getTime();
 
 beforeAll(async () => {
@@ -21,8 +21,8 @@ afterAll(async () => {
   await connections.disconnect();
 });
 
-describe("feed endpoint", () => {
-  test("create a new feed", async () => {
+describe("credential endpoint", () => {
+  test("create a new credential", async () => {
     const expected = {
       name: expect.any(String),
       url: expect.any(String),
@@ -40,7 +40,7 @@ describe("feed endpoint", () => {
       });
   });
 
-  test("get feed by id", async () => {
+  test("get credential by id", async () => {
     const id = 1;
 
     await request
@@ -51,7 +51,7 @@ describe("feed endpoint", () => {
       });
   });
 
-  test("get all feeds", async () => {
+  test("get all credentials", async () => {
     await request
       .get(url)
       .expect(200)
@@ -60,7 +60,7 @@ describe("feed endpoint", () => {
       });
   });
 
-  test("update feed by id", async () => {
+  test("update credential by id", async () => {
     const id = 1;
 
     const expected = {};
@@ -69,17 +69,14 @@ describe("feed endpoint", () => {
       .put(url + "/" + id)
       .send({
         name: "degrees1" + currentTime,
-        description: "description0",
-        url: "url1",
-        root_notation: null,
-        credential_id: null,
+        url: "url1" + currentTime,
       })
       .expect(200)
       .then((res) => {
         expect(res.body).toStrictEqual(matchObject);
       });
   });
-  test("delete feed by id", async () => {
+  test("delete credential by id", async () => {
     const id = 3;
 
     await request
@@ -93,14 +90,12 @@ describe("feed endpoint", () => {
 });
 
 matchObject = {
-  created_at: expect.any(String),
-
   id: 1,
-  name: expect.any(String),
   created_at: expect.any(String),
-  root_notation: null,
-  credential_id: null,
-  url: "url1",
-  description: "description0",
   updated_at: expect.any(String),
+  name: expect.any(String),
+  token: null,
+  password: "password1",
+  url: expect.any(String),
+  username: "username",
 };

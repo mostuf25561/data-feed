@@ -11,14 +11,14 @@ exports.seed = function (knex) {
           description: "description1",
           url: "url1",
           root_notation: "data.results",
-          login_id: null,
+          credential_id: null,
         },
         {
           name: "name2",
           description: "description",
           url: "url1",
           root_notation: "root_notation",
-          login_id: null,
+          credential_id: null,
         },
       ]);
     });

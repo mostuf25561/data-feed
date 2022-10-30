@@ -14,7 +14,7 @@ exports.up = function (knex /*, Promise*/) {
       .onDelete("CASCADE");
     table.string("name", 100).unique().notNull();
 
-    table.string("notation"); //field notation
+    table.string("object_notation"); //field object_notation
     table.string("field_name").notNull(); //alias, new field name
 
     table
@@ -27,14 +27,15 @@ exports.up = function (knex /*, Promise*/) {
     table.string("new_value").notNull();
 
     //TODO: add support for value type
-    // table.string("value_type").notNull();
-    // table.string("new_value_type").notNull();
+    table
+      .enum("value_type", ["boolean", "number", "string"])
+      .defaultTo("string");
 
     table.timestamps(true, true); //created_at, modified_at
 
     table.datetime("scope");
 
-    table.unique(["notation", "value", "operator"]);
+    table.unique(["object_notation", "value", "operator"]);
   });
 };
 

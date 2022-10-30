@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 const rulesRouter = require("./routes/rules");
 const feedsRouter = require("./routes/feeds");
 
+const credentialsRouter = require("./routes/credentials");
+
 const app = express();
 
 // app.use(validator());
@@ -15,6 +17,8 @@ app.use(bodyParser.urlencoded({ limit: "1mb", extended: false }));
 app.use(express.json());
 app.use("/api/rules", rulesRouter);
 app.use("/api/feeds", feedsRouter);
+app.use("/api/credentials", credentialsRouter);
+
 app.get("/", async (req, res, next) => {
   const now = Date.now();
   res.send("time:  " + now);
