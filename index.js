@@ -2,9 +2,10 @@ const knex = require("./services/knex");
 const { Model } = require("objection");
 
 const app = require("./app");
+const port = process.env.NODE_PORT || 8081;
 // set up database with objection and knex
-Model.knex(db);
+Model.knex(knex);
 
-app.listen(process.env.NODE_PORT, () => {
-  console.log(`listening on port ${process.env.NODE_PORT}`);
+app.listen(port, () => {
+  console.log(`listening on port ${port}`);
 });
