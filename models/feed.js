@@ -2,7 +2,7 @@ const { Model } = require("objection");
 
 class Feed extends Model {
   static get tableName() {
-    return "feed";
+    return "feeds";
   }
 
   static get relationMappings() {

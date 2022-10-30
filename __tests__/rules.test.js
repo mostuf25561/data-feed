@@ -132,19 +132,3 @@ matchObject = {
   updated_at: expect.any(String),
   value: expect.any(String),
 };
-
-// const initDB = () => {
-//   return new Promise((resolve, reject) => {
-//     db.then((conn) => {
-//       console.log("connection successful");
-//       connection = conn;
-//       //   service.init(connection);
-//       //rulesModel.init(connection);
-
-//       resolve();
-//     }).catch((err) => {
-//       console.error("connection", err);
-//       reject(err);
-//     });
-//   });
-// };

@@ -24,8 +24,7 @@ exports.seed = function (knex) {
           connection: "or",
           value: "value2",
           new_value: "new_value2",
-          updated_at: "2021-10-29 11:52:50",
-          created_at: "2021-10-29 11:52:50",
+
           scope: "2021-10-29 11:52:50",
           feed_id: 2,
         },

@@ -2,7 +2,7 @@
 
 const express = require("express"),
   router = express.Router(),
-  controller = require("../controllers/rules");
+  controller = require("../controllers/feeds");
 
 // GET
 router.get("/", controller.list);

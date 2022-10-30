@@ -30,7 +30,8 @@ exports.up = function (knex /*, Promise*/) {
     // table.string("value_type").notNull();
     // table.string("new_value_type").notNull();
 
-    table.timestamps(); //created_at, modified_at
+    table.timestamps(true, true); //created_at, modified_at
+
     table.datetime("scope");
 
     table.unique(["notation", "value", "operator"]);
@@ -40,12 +41,3 @@ exports.up = function (knex /*, Promise*/) {
 exports.down = function (knex /*, Promise*/) {
   return knex.schema.dropTableIfExists("rules");
 };
-// name: "rule1",
-// field_name: "field_name1",
-// operator: "lower_then",
-// connection: "connection1",
-// value: "value1",
-// new_value: "new_value1",
-// updated_at: "2021-10-29 11:52:50",
-// created_at: "2021-10-29 11:52:50",
-// scope: "2021-10-29 11:52:50",

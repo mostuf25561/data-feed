@@ -11,7 +11,7 @@ exports.up = function (knex) {
     table.string("username").notNull();
     table.string("password").notNull();
 
-    table.timestamps(); // created_at / updated_at
+    table.timestamps(true, true); // created_at / updated_at
   });
 };
 
