@@ -9,5 +9,8 @@ npm run seed
 
 TODOS:
 
+- validators
+- test data convertion of aliased column
 - jest config
 - dynamic define type of aliased column
+- api examples using postman
