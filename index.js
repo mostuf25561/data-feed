@@ -1,11 +1,10 @@
-const setupDb = require('./db/db-setup');
-const express = require('express');
-const router = require('./routes');
+const knex = require("./services/knex");
+const { Model } = require("objection");
 
+const app = require("./app");
 // set up database with objection and knex
-setupDb();
+Model.knex(db);
 
-const app = express();
-app.use(express.json());
-app.use(router);
-app.listen(8080, () => console.log('server is running on port 8080'));
+app.listen(process.env.NODE_PORT, () => {
+  console.log(`listening on port ${process.env.NODE_PORT}`);
+});

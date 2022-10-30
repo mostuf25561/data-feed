@@ -83,3 +83,12 @@ This will:
 - `npm run down`: undo last migration. Since we only have one migration at the moment this is equivalent to deleting all tables
 - `npm run migrate`: executes all migrations in `./db/migrations`
 - `npm run make-seed`: create a new seed file
+
+- history:
+
+```sh
+npm run down
+npm run up
+npm run seed
+./node_modules/.bin/jest __tests__/*.test.js
+```

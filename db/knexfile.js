@@ -1,28 +1,22 @@
 // Update with your config settings.
 
-const { knexSnakeCaseMappers } = require('objection');
-
 module.exports = {
   development: {
-    client: 'postgresql',
+    client: "mysql",
     connection: {
-      database: 'objection_tutorial',
-      user: 'jgoebel',
-      password: null,
+      database: "feed_data",
+      user: "root",
+      password: "my-secret-pw",
     },
     pool: {
       min: 2,
       max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations',
+      tableName: "knex_migrations",
     },
     seeds: {
-      directory: './seeds',
+      directory: "./seeds",
     },
-    // automatically convert camelCase to snake case
-    // so table names are in snake case
-    // but we can use camelCase fields per default
-    ...knexSnakeCaseMappers(),
   },
 };
