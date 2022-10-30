@@ -16,7 +16,11 @@ exports.up = function (knex /*, Promise*/) {
     table.string("root_notation"); //notation inside array of entries
 
     //foreign keys
-    table.integer("credential_id").unsigned().references("credentials.id");
+    table
+      .integer("credential_id")
+      .unsigned()
+      .references("credentials.id")
+      .defaultTo(null);
 
     // Other
     table.timestamps(true, true); // created_at / updated_at

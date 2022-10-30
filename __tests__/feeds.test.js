@@ -99,8 +99,9 @@ matchObject = {
   name: expect.any(String),
   created_at: expect.any(String),
   root_notation: null,
+
   credential_id: null,
   url: "url1",
-  description: "description0",
+  description: expect.any(String),
   updated_at: expect.any(String),
 };
