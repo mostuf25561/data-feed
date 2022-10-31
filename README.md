@@ -9,10 +9,9 @@ npm run seed
 
 TODOS:
 
-- api examples using postman
+- dynamicly create new tables
 
 - error handling: not-found, final
-
 - validators
 - test data convertion of aliased column
 - jest config
