@@ -9,10 +9,9 @@ npm run seed
 
 TODOS:
 
-- dynamicly create new tables
-
+- dynamicly create new tables (bigQuery?)
+- add dummy login (use 3 different APIs)
 - error handling: not-found, final
-- validators
-- test data convertion of aliased column
-- jest config
-- dynamic define type of aliased column
+- add schema validators
+- setup jest config
+- dynamicly define type of aliased column
