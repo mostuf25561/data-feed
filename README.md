@@ -1,6 +1,7 @@
 - run tests:
 
 ```sh
+#migrate, seed data and run tests:
 npm run down
 npm run up
 npm run seed
