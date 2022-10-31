@@ -1,10 +1,16 @@
 - run tests:
 
 ```sh
+#install and run docker of mysql
+npm i
+docker-compose up
+
 #migrate, seed data and run tests:
 npm run down
 npm run up
 npm run seed
+
+#run tests
 ./node_modules/.bin/jest __tests__/*.test.js
 ```
 

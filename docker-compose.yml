@@ -1,0 +1,24 @@
+version: "3.6"
+services:
+  mysql-db3:
+    image: mariadb:10.4.14
+    container_name: mysql-db3
+    volumes:
+      - ./mysql-db:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: feed_data
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_HOST: localhost
+      NODE_ENV: dev
+    ports:
+      - 3308:3306
+    healthcheck:
+      test: '/usr/bin/mysql -h localhost --user=root --password=my-secret-pw --execute "SELECT 1;"'
+      timeout: 20s
+      retries: 1
+    command:
+      --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+      --init-file /docker-entrypoint-initdb.d/init.sql

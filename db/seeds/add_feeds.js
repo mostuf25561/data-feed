@@ -10,7 +10,7 @@ exports.seed = function (knex) {
           name: "name1",
           description: "description1",
           url: "url1",
-          root_notation: "data.results",
+          root_notation: null,
           credential_id: null,
         },
         {

@@ -7,6 +7,7 @@ module.exports = {
       database: "feed_data",
       user: "root",
       password: "my-secret-pw",
+      port: 3308,
     },
     pool: {
       min: 2,
