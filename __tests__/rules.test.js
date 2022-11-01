@@ -25,13 +25,13 @@ afterAll(async () => {
 describe("rule endpoint", () => {
   test("create a new rule", async () => {
     const expected = {
-      connection: "and",
+      boolean_combination: "and",
       feed_id: 2,
-      field_name: "field_name3",
+      notation: "notation3",
       id: expect.any(Number),
       name: "rule3" + currentTime,
       new_value: "new_value3",
-      operator: "lower_then",
+      equality: "lower_then",
       scope: expect.any(String),
       value: expect.any(String),
     };
@@ -39,9 +39,9 @@ describe("rule endpoint", () => {
       .post(url)
       .send({
         name: "rule3" + currentTime,
-        field_name: "field_name3",
-        operator: "lower_then",
-        connection: "and",
+        notation: "notation3",
+        equality: "lower_then",
+        boolean_combination: "and",
         value: "value3" + Date.now(),
         new_value: "new_value3",
         updated_at: "2021-10-29 11:52:50",
@@ -79,15 +79,15 @@ describe("rule endpoint", () => {
     const id = 1;
 
     const expected = {
-      connection: "and",
+      boolean_combination: "and",
       created_at: null,
       feed_id: 2,
-      field_name: expect.any(String),
+      notation: expect.any(String),
       id: 3,
       name: expect.any(String),
       new_value: "new_value3",
       object_notation: null,
-      operator: "lower_then",
+      equality: "lower_then",
       scope: expect.any(String),
       updated_at: null,
       value: "value3",
@@ -97,7 +97,7 @@ describe("rule endpoint", () => {
       .put(url + "/" + id)
       .send({
         name: "degrees1" + currentTime,
-        field_name: "aaaa" + currentTime,
+        notation: "aaaa" + currentTime,
       })
       .expect(200)
       .then((res) => {
@@ -117,15 +117,15 @@ describe("rule endpoint", () => {
   });
 });
 matchObject = {
-  connection: "or",
+  boolean_combination: "or",
   created_at: expect.any(String),
   feed_id: 1,
-  field_name: expect.any(String),
+  notation: expect.any(String),
   id: 1,
   name: expect.any(String),
   new_value: "new_value1",
   object_notation: null,
-  operator: "lower_then",
+  equality: "lower_then",
   scope: expect.any(String),
   updated_at: expect.any(String),
   value: expect.any(String),

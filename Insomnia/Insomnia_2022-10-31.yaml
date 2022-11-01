@@ -58,9 +58,9 @@ resources:
         {
         	
                   "name": "rule1",
-                  "field_name": "field_name1",
-                  "operator": "lower_then",
-                  "connection": "or",
+                  "notation": "notation1",
+                  "equality": "lower_then",
+                  "boolean_combination": "or",
                   "value": "value1",
                   "new_value": "new_value1",
                  
@@ -95,9 +95,9 @@ resources:
         {
         	
                   "name": "rule1",
-                  "field_name": "field_name1",
-                  "operator": "lower_then",
-                  "connection": "or",
+                  "notation": "notation1",
+                  "equality": "lower_then",
+                  "boolean_combination": "or",
                   "value": "value1",
                   "new_value": "new_value1",
                  
@@ -198,9 +198,9 @@ resources:
         {
         	
                  "name": "rule11",
-                  "field_name": "field_name1",
-                  "operator": "lower_then",
-                  "connection": "or",
+                  "notation": "notation1",
+                  "equality": "lower_then",
+                  "boolean_combination": "or",
                   "value": "value1",
                   "new_value": "new_value1",
                  

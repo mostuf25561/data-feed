@@ -15,13 +15,13 @@ exports.up = function (knex /*, Promise*/) {
     table.string("name", 100).unique().notNull();
 
     table.string("object_notation"); //field object_notation
-    table.string("field_name").notNull(); //alias, new field name
+    table.string("notation").notNull(); //alias, new field name
 
     table
-      .enum("operator", ["lower_then", "greater_then", "contains"])
+      .enum("equality", ["lower_then", "greater_then", "contains"])
       .defaultTo("contains")
       .notNull();
-    table.enum("connection", ["or", "and"]).notNull().defaultTo("and");
+    table.enum("boolean_combination", ["or", "and"]).notNull().defaultTo("and");
 
     table.string("value").notNull();
     table.string("new_value").notNull();
@@ -35,7 +35,7 @@ exports.up = function (knex /*, Promise*/) {
 
     table.datetime("scope");
 
-    table.unique(["object_notation", "value", "operator"]);
+    table.unique(["object_notation", "value", "equality"]);
   });
 };
 
