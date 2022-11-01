@@ -2,6 +2,19 @@
 const _ = require("lodash");
 const extractService = require("../lib/extractService");
 const constants = require("../lib/constants");
+const fs = require("fs");
+const path = require("path");
+
+// import _ from "lodash";
+// import extractService from "../lib/extractService";
+// import constants from "../lib/constants";
+// import path from "path";
+
+let rules;
+beforeAll(() => {
+  const rulesPath = path.join(__dirname, "fixtures", "rules.json");
+  rules = JSON.parse(fs.readFileSync(rulesPath, "utf8"));
+});
 
 describe("extract raw data to rows and columns", () => {
   test("extract all records when data is an array", async () => {
@@ -52,7 +65,6 @@ describe("extract raw data to rows and columns", () => {
 describe("create sql query from rules", () => {
   let data;
   let expected;
-  let rules;
   const expectedSqlQuery =
     'select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name from feeds';
   const expectedSqlQueryWithTimeScope =
@@ -70,51 +82,6 @@ describe("create sql query from rules", () => {
       { as_name: "a", as_age: "needs help" },
       { as_name: "aa", as_age: "needs help" },
     ];
-
-    rules = [
-      {
-        object_notation: "age",
-        equality: constants.equality.lower_than,
-        value: 2,
-        new_value: "needs help",
-        boolean_combination: constants.boolean_combination.or,
-        column_name_alias: "as_age",
-      },
-      {
-        object_notation: "age",
-        equality: constants.equality.bigger_than,
-        value: 100,
-        new_value: "needs help",
-        boolean_combination: constants.boolean_combination.or,
-        column_name_alias: "as_age",
-      },
-      {
-        object_notation: "age",
-        equality: constants.equality.lower_than,
-        value: 100,
-        new_value: "doing well",
-        boolean_combination: constants.boolean_combination.or,
-        column_name_alias: "as_age",
-      },
-      {
-        object_notation: "name",
-        equality: constants.equality.contains,
-        value: "b",
-        new_value: "has b or c",
-        boolean_combination: constants.boolean_combination.or,
-        column_name_alias: "as_name",
-        scope: new Date("06 October 2011 14:48 UTC").toISOString(),
-      },
-      {
-        object_notation: "name",
-        equality: constants.equality.contains,
-        value: "c",
-        new_value: "has b or c",
-        boolean_combination: constants.boolean_combination.or,
-        column_name_alias: "as_name",
-        scope: "2012-10-06T14:48:00.000Z",
-      },
-    ];
   });
 
   test("group rules by column notation and by new value (convertion target)", async () => {
@@ -124,7 +91,7 @@ describe("create sql query from rules", () => {
           {
             boolean_combination: "or",
             column_name_alias: "as_name",
-            equality: 1,
+            equality: "contains",
             new_value: "has b or c",
             object_notation: "name",
             scope: "2011-10-06T14:48:00.000Z",
@@ -133,7 +100,7 @@ describe("create sql query from rules", () => {
           {
             boolean_combination: "or",
             column_name_alias: "as_name",
-            equality: 1,
+            equality: "contains",
             new_value: "has b or c",
             object_notation: "name",
             value: "c",
@@ -145,7 +112,7 @@ describe("create sql query from rules", () => {
         "doing well": [
           {
             boolean_combination: constants.boolean_combination.or,
-            equality: 0,
+            equality: "lower_than",
             new_value: "doing well",
             object_notation: "age",
             value: 100,
@@ -155,7 +122,7 @@ describe("create sql query from rules", () => {
         "needs help": [
           {
             boolean_combination: constants.boolean_combination.or,
-            equality: 0,
+            equality: "lower_than",
             new_value: "needs help",
             object_notation: "age",
             value: 2,
@@ -163,7 +130,7 @@ describe("create sql query from rules", () => {
           },
           {
             boolean_combination: constants.boolean_combination.or,
-            equality: 2,
+            equality: "bigger_than",
             new_value: "needs help",
             object_notation: "age",
             value: 100,

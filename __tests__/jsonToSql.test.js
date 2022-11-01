@@ -11,18 +11,25 @@ describe("jsonToSql service", () => {
       {
         name: "John Smith",
         address: "780 Mission St, San Francisco, CA 94103",
+        age: 2,
       },
-      { name: "Sally Brown", address: "75 37th Ave S, St Cloud, MN 94103" },
+      {
+        name: "Sally Brown",
+        address: "75 37th Ave S, St Cloud, MN 94103",
+        age: 40,
+      },
       {
         name: "John Johnson",
         address: "1262 Roosevelt Trail, Raymond, ME 04071",
+        age: 102,
       },
     ];
   });
 
   test("create sql query which stores a given json to the db", async () => {
     const expected =
-      'DROP TABLE IF EXISTS t1;CREATE TABLE t1(json_col JSON);INSERT INTO t1 VALUES (\'{"arr":[{"name":"John Smith","address":"780 Mission St, San Francisco, CA 94103"},{"name":"Sally Brown","address":"75 37th Ave S, St Cloud, MN 94103"},{"name":"John Johnson","address":"1262 Roosevelt Trail, Raymond, ME 04071"}]}\');';
+      'DROP TABLE IF EXISTS t1;CREATE TABLE t1(json_col JSON);INSERT INTO t1 VALUES (\'{"arr":[{"name":"John Smith","address":"780 Mission St, San Francisco, CA 94103","age":2},{"name":"Sally Brown","address":"75 37th Ave S, St Cloud, MN 94103","age":40},{"name":"John Johnson","address":"1262 Roosevelt Trail, Raymond, ME 04071","age":102}]}\');';
+
     expect(sqls.storeJsonToDb(entries)).toBe(expected);
   });
   test("create sql query which shows the stored json as table", async () => {

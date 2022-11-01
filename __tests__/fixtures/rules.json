@@ -1,0 +1,44 @@
+[
+  {
+    "object_notation": "age",
+    "equality": "lower_than",
+    "value": 2,
+    "new_value": "needs help",
+    "boolean_combination": "or",
+    "column_name_alias": "as_age"
+  },
+  {
+    "object_notation": "age",
+    "equality": "bigger_than",
+    "value": 100,
+    "new_value": "needs help",
+    "boolean_combination": "or",
+    "column_name_alias": "as_age"
+  },
+  {
+    "object_notation": "age",
+    "equality": "lower_than",
+    "value": 100,
+    "new_value": "doing well",
+    "boolean_combination": "or",
+    "column_name_alias": "as_age"
+  },
+  {
+    "object_notation": "name",
+    "equality": "contains",
+    "value": "b",
+    "new_value": "has b or c",
+    "boolean_combination": "or",
+    "column_name_alias": "as_name",
+    "scope": "2011-10-06T14:48:00.000Z"
+  },
+  {
+    "object_notation": "name",
+    "equality": "contains",
+    "value": "c",
+    "new_value": "has b or c",
+    "boolean_combination": "or",
+    "column_name_alias": "as_name",
+    "scope": "2012-10-06T14:48:00.000Z"
+  }
+]
