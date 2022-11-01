@@ -38,7 +38,7 @@ name VARCHAR(40)  PATH '$.name',address VARCHAR(100)  PATH '$.address')
       const entriesAsString = entries
         .map((entry) => {
           return (
-            entry.field_name +
+            entry.column_name_alias +
             " " +
             entry.type +
             "  PATH " +
@@ -59,12 +59,12 @@ ${entriesAsString})
     expect(
       createView([
         {
-          field_name: "name",
+          column_name_alias: "name",
           type: "VARCHAR(40)",
           object_notation: "name",
         },
         {
-          field_name: "address",
+          column_name_alias: "address",
           type: "VARCHAR(100)",
           object_notation: "address",
         },

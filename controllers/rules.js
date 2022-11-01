@@ -42,11 +42,11 @@ module.exports = {
         scope,
         equality,
         value,
-        field_name,
+        column_name_alias,
         new_value,
         boolean_combination,
         feed_id,
-        notation,
+        object_notation,
       } = req.body;
       const results = await model.query().insert({
         name,
@@ -54,11 +54,11 @@ module.exports = {
         scope,
         equality,
         value,
-        field_name,
+        column_name_alias,
         new_value,
         boolean_combination,
         feed_id,
-        notation,
+        object_notation,
       });
       res.json(results);
     } catch (err) {

@@ -15,7 +15,7 @@ exports.up = function (knex /*, Promise*/) {
     table.string("name", 100).unique().notNull();
 
     table.string("object_notation"); //field object_notation
-    table.string("field_name").notNull(); //alias, new field name
+    table.string("column_name_alias").notNull(); //alias, new field name
 
     table
       .enum("equality", ["lower_then", "greater_then", "contains"])
