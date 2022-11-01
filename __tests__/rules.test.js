@@ -27,7 +27,7 @@ describe("rule endpoint", () => {
     const expected = {
       boolean_combination: "and",
       feed_id: 2,
-      notation: "notation3",
+      field_name: "field_name3",
       id: expect.any(Number),
       name: "rule3" + currentTime,
       new_value: "new_value3",
@@ -39,7 +39,7 @@ describe("rule endpoint", () => {
       .post(url)
       .send({
         name: "rule3" + currentTime,
-        notation: "notation3",
+        field_name: "field_name3",
         equality: "lower_then",
         boolean_combination: "and",
         value: "value3" + Date.now(),
@@ -82,7 +82,7 @@ describe("rule endpoint", () => {
       boolean_combination: "and",
       created_at: null,
       feed_id: 2,
-      notation: expect.any(String),
+      field_name: expect.any(String),
       id: 3,
       name: expect.any(String),
       new_value: "new_value3",
@@ -97,7 +97,7 @@ describe("rule endpoint", () => {
       .put(url + "/" + id)
       .send({
         name: "degrees1" + currentTime,
-        notation: "aaaa" + currentTime,
+        field_name: "aaaa" + currentTime,
       })
       .expect(200)
       .then((res) => {
@@ -120,7 +120,7 @@ matchObject = {
   boolean_combination: "or",
   created_at: expect.any(String),
   feed_id: 1,
-  notation: expect.any(String),
+  field_name: expect.any(String),
   id: 1,
   name: expect.any(String),
   new_value: "new_value1",

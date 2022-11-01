@@ -58,7 +58,7 @@ resources:
         {
         	
                   "name": "rule1",
-                  "notation": "notation1",
+                  "field_name": "field_name1",
                   "equality": "lower_then",
                   "boolean_combination": "or",
                   "value": "value1",
@@ -95,7 +95,7 @@ resources:
         {
         	
                   "name": "rule1",
-                  "notation": "notation1",
+                  "field_name": "field_name1",
                   "equality": "lower_then",
                   "boolean_combination": "or",
                   "value": "value1",
@@ -198,7 +198,7 @@ resources:
         {
         	
                  "name": "rule11",
-                  "notation": "notation1",
+                  "field_name": "field_name1",
                   "equality": "lower_then",
                   "boolean_combination": "or",
                   "value": "value1",

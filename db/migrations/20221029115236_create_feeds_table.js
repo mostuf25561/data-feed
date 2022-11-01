@@ -10,10 +10,9 @@ exports.up = function (knex /*, Promise*/) {
     table.string("name", 100).unique().notNull();
     table.string("description");
 
-    //array_notation
-    table.string("url").notNull(); //notation inside array of entries
+    table.string("url").notNull();
 
-    table.string("root_notation"); //notation inside array of entries
+    table.string("root_notation");
 
     //foreign keys
     table

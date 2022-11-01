@@ -7,7 +7,7 @@ exports.seed = function (knex) {
       return knex("rules").insert([
         {
           name: "rule1",
-          notation: "notation1",
+          field_name: "field_name1",
           equality: "lower_then",
           boolean_combination: "or",
           value: "value1",
@@ -19,7 +19,7 @@ exports.seed = function (knex) {
         },
         {
           name: "rule2",
-          notation: "notation2",
+          field_name: "field_name2",
           equality: "lower_then",
           boolean_combination: "or",
           value: "value2",
