@@ -13,6 +13,7 @@ exports.up = function (knex /*, Promise*/) {
       // .inTable("feeds")
       .onDelete("CASCADE");
     table.string("name", 100).unique().notNull();
+    table.string("type", 50).notNull(); //field object_notation
 
     table.string("object_notation"); //field object_notation
     table.string("column_name_alias").notNull(); //alias, new field name

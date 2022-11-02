@@ -5,5 +5,5 @@ export default {
   testMatch: ["**/*.test.[jt]s"],
   moduleNameMapper: { "^jest/(.*)$": "<rootDir>/jest/$1" },
   moduleDirectories: ["node_modules", "src"],
-  coverageDirectory: "src/__tests__/coverage",
+  coverageDirectory: "__tests__/coverage",
 };

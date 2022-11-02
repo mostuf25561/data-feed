@@ -13,7 +13,7 @@ exports.up = function (knex) {
     table.string("token");
 
     table.timestamps(true, true); // created_at / updated_at
-    table.unique(["username", "password", "token"]);
+    table.unique(["username", "url", "token"]);
   });
 };
 
