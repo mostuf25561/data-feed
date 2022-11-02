@@ -129,5 +129,5 @@ matchObject = {
   scope: expect.any(String),
   updated_at: expect.any(String),
   value: expect.any(String),
-  value_type: expect.any(String),
+  type: "VARCHAR(100)",
 };
