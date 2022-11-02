@@ -16,30 +16,12 @@ npm run seed
 
 TODOS:
 
-- table: credentials - set uniqu index for url and token or url with username
-- replace as\_<colName> with <colName>
-- dynamicly create new tables (bigQuery?)
+- split rules table to conditions and rules
+- test both helper funtions and working against real db
+- test flow
+
+LATER:
+
 - add dummy login (use 3 different APIs)
 - error handling: not-found, final
 - add schema validators
-- setup jest config
-- dynamicly define type of aliased column
-
-add it to the seeds:
-const [
-{
-column_name_alias: "name",
-type: "VARCHAR(40)",
-object_notation: "name",
-},
-{
-column_name_alias: "address",
-type: "VARCHAR(100)",
-object_notation: "address",
-},
-{
-column_name_alias: "age",
-type: "INT",
-object_notation: "age",
-},
-],
