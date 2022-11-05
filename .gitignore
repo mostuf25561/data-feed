@@ -1,0 +1,22 @@
+# Dependency directories
+node_modules
+dist
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# IDEs
+.idea
+
+# config local
+.DS_Store
+.env
+
+# backups
+*.orig
+coverage
+
+*.cache.json
+*.code-workspace
