@@ -1,11 +1,11 @@
 _type: export
 __export_format: 4
-__export_date: 2022-10-31T00:09:48.309Z
+__export_date: 2022-11-05T19:30:48.217Z
 __export_source: insomnia.desktop.app:v2022.6.0
 resources:
   - _id: req_b864dfb161d64352b56d990be3337695
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667156537145
+    modified: 1667661223074
     created: 1667144600108
     url: "{{ _.feedsUrl }}"
     name: feed create
@@ -46,7 +46,7 @@ resources:
     _type: workspace
   - _id: req_e92579f946c3454387ace92b20fb1b3d
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667156556229
+    modified: 1667661289361
     created: 1667145913765
     url: "{{ _.baseUrl }}/api/rules"
     name: rules create
@@ -58,12 +58,12 @@ resources:
         {
         	
                   "name": "rule1",
-                  "column_name_alias": "column_name_alias1",
-                  "equality": "lower_then",
-                  "boolean_combination": "or",
+                  "field_name": "field_name1",
+                  "operator": "lower_then",
+                  "connection": "or",
                   "value": "value1",
                   "new_value": "new_value1",
-                 
+                 "column_name_alias": "zzzz",
                   "scope": "2021-10-29 11:52:50",
                   "feed_id": 1
         }
@@ -83,7 +83,7 @@ resources:
     _type: request
   - _id: req_90a39f935d484e84a5772969f97a8907
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667156695309
+    modified: 1667675320057
     created: 1667156567776
     url: "{{ _.baseUrl }}/api/rules"
     name: credentials create
@@ -94,13 +94,13 @@ resources:
       text: |
         {
         	
-                  "name": "rule1",
-                  "column_name_alias": "column_name_alias1",
-                  "equality": "lower_then",
-                  "boolean_combination": "or",
+                  "name": "rule11",
+                  "field_name": "field_name1",
+                  "operator": "lower_then",
+                  "connection": "or",
                   "value": "value1",
                   "new_value": "new_value1",
-                 
+                 "column_name_alias":"cfff",
                   "scope": "2021-10-29 11:52:50",
                   "feed_id": 1
         }
@@ -120,7 +120,7 @@ resources:
     _type: request
   - _id: req_bd04fcbc44614144b7adb64300a12011
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667156570360
+    modified: 1667675330229
     created: 1667145786366
     url: "{{ _.baseUrl }}/api/feeds/2"
     name: feed update
@@ -131,7 +131,7 @@ resources:
       text: |
         {
         	
-                 "name": "name11",
+                 "name": "name111",
                   "description": "description11",
                   "url": "url11",
                   "root_notation": "data.results",
@@ -153,7 +153,7 @@ resources:
     _type: request
   - _id: req_49b050148c754c7ba27604d7d15ba4e1
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667174796808
+    modified: 1667675333462
     created: 1667156587847
     url: "{{ _.baseUrl }}/api/feeds/2"
     name: credentials update
@@ -186,7 +186,7 @@ resources:
     _type: request
   - _id: req_a827476777aa4898970ce3f7f8f1bc1a
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667156532243
+    modified: 1667675641803
     created: 1667145921857
     url: "{{ _.baseUrl }}/api/rules/2"
     name: rules update
@@ -197,15 +197,15 @@ resources:
       text: |
         {
         	
-                 "name": "rule11",
-                  "column_name_alias": "column_name_alias1",
-                  "equality": "lower_then",
-                  "boolean_combination": "or",
-                  "value": "value1",
-                  "new_value": "new_value1",
-                 
-                  "scope": "2021-10-29 11:52:50",
-                  "feed_id": 1
+                    "object_notation": "name",
+                    "equality": "contains",
+                    "value": "c",
+                    "new_value": "has b or c",
+                    "boolean_combination": "or",
+                    "column_name_alias": "as_name",
+                    "scope": "2012-10-06T14:48:00",
+                    "type": "VARCHAR(100)",
+                    "feed_id": 1
         }
     parameters: []
     headers:
