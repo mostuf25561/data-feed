@@ -2,13 +2,11 @@
   {
     "object_notation": "age",
     "equality": "lower_than",
-
     "value": 2,
     "new_value": "needs help",
     "boolean_combination": "or",
     "column_name_alias": "as_age",
-
-    "type": "int(11)"
+    "type": "int"
   },
   {
     "object_notation": "age",
@@ -17,8 +15,7 @@
     "new_value": "needs help",
     "boolean_combination": "or",
     "column_name_alias": "as_age",
-
-    "type": "int(11)"
+    "type": "int"
   },
   {
     "object_notation": "age",
@@ -27,29 +24,26 @@
     "new_value": "doing well",
     "boolean_combination": "or",
     "column_name_alias": "as_age",
-
-    "type": "int(11)"
+    "type": "int"
   },
   {
-    "object_notation": "name",
+    "object_notation": "nested.name",
     "equality": "contains",
     "value": "b",
     "new_value": "has b or c",
     "boolean_combination": "or",
     "column_name_alias": "as_name",
     "scope": "2011-10-06T14:48:00.000Z",
-
     "type": "VARCHAR(100)"
   },
   {
-    "object_notation": "name",
+    "object_notation": "nested.name",
     "equality": "contains",
     "value": "c",
     "new_value": "has b or c",
     "boolean_combination": "or",
     "column_name_alias": "as_name",
     "scope": "2012-10-06T14:48:00.000Z",
-
     "type": "VARCHAR(100)"
   }
 ]

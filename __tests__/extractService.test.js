@@ -62,19 +62,21 @@ describe("[data input] extract raw data to rows and columns", () => {
     expect(res[1]).toEqual({ as_name: "a", as_last: "k" });
   });
 });
-describe("[rules input] group rules", () => {
+describe("group rules", () => {
   it("should group rules by service", () => {
     const columns = Object.keys(
       extractService.helpers.groupRulesByNotation(rules)
     );
-    expect(columns).toEqual(["age", "name"]);
+    expect(columns).toEqual(["age", "nested.name"]);
   });
 });
 describe("create sql query from rules", () => {
   let data;
   let expected;
   const expectedSqlQuery =
-    'select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name';
+    // 'select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( nested.name like \'%b%\' or nested.name like \'%c%\' ) then "has b or c" else nested.name end as as_name';, case when ( name like '%b%' or name like '%c%' ) then \"has b or c\" else name end as as_name"
+    ", case when ( name like '%b%' or name like '%c%' ) then \"has b or c\" else name end as as_name";
+
   const expectedSqlQueryWithTimeScope =
     " where created_at > '2011-10-06T14:48:00.000Z'";
 
@@ -94,14 +96,14 @@ describe("create sql query from rules", () => {
 
   test("group rules by column notation and by new value (convertion target)", async () => {
     expect(extractService.helpers.groupRulesByNotation(rules)).toEqual({
-      name: {
+      "nested.name": {
         "has b or c": [
           {
             boolean_combination: "or",
             column_name_alias: "as_name",
             equality: "contains",
             new_value: "has b or c",
-            object_notation: "name",
+            object_notation: "nested.name",
             scope: "2011-10-06T14:48:00.000Z",
             value: "b",
             type: "VARCHAR(100)",
@@ -111,7 +113,7 @@ describe("create sql query from rules", () => {
             column_name_alias: "as_name",
             equality: "contains",
             new_value: "has b or c",
-            object_notation: "name",
+            object_notation: "nested.name",
             value: "c",
             scope: "2012-10-06T14:48:00.000Z",
             type: "VARCHAR(100)",
@@ -127,7 +129,7 @@ describe("create sql query from rules", () => {
             object_notation: "age",
             value: 100,
             column_name_alias: "as_age",
-            type: "int(11)",
+            type: "int",
           },
         ],
         "needs help": [
@@ -138,7 +140,7 @@ describe("create sql query from rules", () => {
             object_notation: "age",
             value: 2,
             column_name_alias: "as_age",
-            type: "int(11)",
+            type: "int",
           },
           {
             boolean_combination: constants.boolean_combination.or,
@@ -147,21 +149,22 @@ describe("create sql query from rules", () => {
             object_notation: "age",
             value: 100,
             column_name_alias: "as_age",
-            type: "int(11)",
+            type: "int",
           },
         ],
       },
     });
   });
 
-  test("prepare sql instruction object from group rules ", async () => {
+  test("group rules by json notation and ", async () => {
     expect(extractService.helpers.convertRulesToSqlInstructions(rules)).toEqual(
       {
         age: {
           "doing well": "age < 100",
           "needs help": "age < 2 or age > 100",
         },
-        name: {
+        "nested.name": {
+          // "has b or c": "nested.name like '%b%' or nested.name like '%c%'",
           "has b or c": "name like '%b%' or name like '%c%'",
         },
       }
@@ -170,7 +173,11 @@ describe("create sql query from rules", () => {
 
   test("prepare sql query from sql instruction object", async () => {
     expect(
-      extractService.helpers.convertSqlInsturctionsToSqlQueries(rules, "feeds")
+      extractService.helpers.convertSqlInsturctionsToSqlQueries(rules, [
+        "id",
+        "created_at",
+        "updated_at",
+      ])
     ).toBe(expectedSqlQuery);
   });
 

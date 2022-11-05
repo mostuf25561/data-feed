@@ -1,0 +1,17 @@
+[
+  {
+    "nested": { "name": "John Smith" },
+    "address": "780 Mission St, San Francisco, CA 94103",
+    "age": 2
+  },
+  {
+    "nested": { "name": "Sally Brown" },
+    "address": "75 37th Ave S, St Cloud, MN 94103",
+    "age": 40
+  },
+  {
+    "nested": { "name": "John Johnson" },
+    "address": "1262 Roosevelt Trail, Raymond, ME 04071",
+    "age": 102
+  }
+]
