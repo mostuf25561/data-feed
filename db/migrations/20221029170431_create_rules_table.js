@@ -19,7 +19,7 @@ exports.up = function (knex /*, Promise*/) {
     table.string("column_name_alias").notNull(); //alias, new field name
 
     table
-      .enum("equality", ["lower_then", "greater_then", "contains"])
+      .enum("equality", ["lower_than", "greater_than", "contains"])
       .defaultTo("contains")
       .notNull();
     table.enum("boolean_combination", ["or", "and"]).notNull().defaultTo("and");
