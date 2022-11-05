@@ -9,6 +9,7 @@ const supertest = require("supertest");
 const connections = require("./setup/connections");
 
 let matchObject;
+let idToDelete;
 
 const request = supertest(app);
 const url = "/api/feeds";
@@ -37,6 +38,7 @@ describe("feed endpoint", () => {
       // .expect(200)
       .then((res) => {
         expect(res.body).toStrictEqual(expected);
+        idToDelete = res.body.id;
       });
   });
 
@@ -79,8 +81,8 @@ describe("feed endpoint", () => {
         expect(res.body).toStrictEqual(matchObject);
       });
   });
-  test("delete feed by id", async () => {
-    const id = 3;
+  test("delete rule by id", async () => {
+    const id = idToDelete;
 
     await request
       .delete(url + "/" + id)

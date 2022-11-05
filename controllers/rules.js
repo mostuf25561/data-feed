@@ -7,7 +7,6 @@ module.exports = {
       const results = await model.query().select();
       res.send(results);
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },
@@ -15,10 +14,9 @@ module.exports = {
   get: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const results = await model.query().findById(1);
+      const results = await model.query().findById(id).throwIfNotFound();
       res.send(results);
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },
@@ -26,10 +24,9 @@ module.exports = {
   delete: async (req, res, next) => {
     try {
       const { id } = req.params;
-      await model.query().deleteById(id);
+      await model.query().deleteById(id).throwIfNotFound();
       res.json({ id: parseInt(id) });
     } catch (err) {
-      console.error(err);
       next(err);
     }
   },
@@ -71,7 +68,10 @@ module.exports = {
     try {
       const { id } = req.params;
 
-      const result = await model.query().updateAndFetchById(id, req.body);
+      const result = await model
+        .query()
+        .updateAndFetchById(id, req.body)
+        .throwIfNotFound();
       res.json(result);
     } catch (err) {
       console.error(err);

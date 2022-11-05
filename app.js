@@ -1,6 +1,6 @@
 const express = require("express");
 
-// import validator from "express-validator";
+// const validator = require("express-validator");
 const bodyParser = require("body-parser");
 
 const rulesRouter = require("./routes/rules");

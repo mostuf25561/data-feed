@@ -1,11 +1,11 @@
 _type: export
 __export_format: 4
-__export_date: 2022-11-05T19:30:48.217Z
+__export_date: 2022-11-05T22:14:47.901Z
 __export_source: insomnia.desktop.app:v2022.6.0
 resources:
   - _id: req_b864dfb161d64352b56d990be3337695
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667661223074
+    modified: 1667682021100
     created: 1667144600108
     url: "{{ _.feedsUrl }}"
     name: feed create
@@ -13,12 +13,12 @@ resources:
     method: POST
     body:
       mimeType: application/json
-      text: |
+      text: >
         {
         	
                  "name": "name111",
                   "description": "description11",
-                  "url": "url11",
+                  "url": "https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=76e83b6b80aee65b3d6caf9409e99cf2",
                   "root_notation": "data.results1",
                   "credential_id": null
         }
@@ -223,9 +223,9 @@ resources:
     _type: request
   - _id: req_f88d1f63833d4688928c77b16ffbc500
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667145857668
+    modified: 1667683191515
     created: 1667145849719
-    url: "{{ _.baseUrl }}/api/feeds/2"
+    url: "{{ _.baseUrl }}/api/feeds/69"
     name: feed get
     description: ""
     method: GET
@@ -246,9 +246,59 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_36ebd282e56d43199242c097159e683a
+    parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
+    modified: 1667683318301
+    created: 1667683206673
+    url: "{{ _.baseUrl }}/api/feeds/6/test"
+    name: feed TEST
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -1666347483195.875
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8672c463b3cc4fd7909e606d0e54a19d
+    parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
+    modified: 1667683144391
+    created: 1667683001081
+    url: "{{ _.baseUrl }}/api/feeds/69"
+    name: feed delete
+    description: ""
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -1666339265495.75
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_37df655e278e4a3691c69bf0366ebac0
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667156645796
+    modified: 1667683094214
     created: 1667156599563
     url: "{{ _.baseUrl }}/api/credentials/2"
     name: credentials get
@@ -271,9 +321,34 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_7fd897fb61b14bdaa851beacb83da28b
+    parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
+    modified: 1667683140973
+    created: 1667683043244
+    url: "{{ _.baseUrl }}/api/credentials/29"
+    name: credentials delete
+    description: ""
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -1666306394695.25
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_33e3ec655ef44343bac072175c2f143e
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667145969215
+    modified: 1667683179174
     created: 1667145930626
     url: "{{ _.baseUrl }}/api/rules/2"
     name: rules get
@@ -296,11 +371,36 @@ resources:
     settingRebuildPath: true
     settingFollowRedirects: global
     _type: request
+  - _id: req_066188bda10442c5a10214b2871f0014
+    parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
+    modified: 1667683118121
+    created: 1667683109762
+    url: "{{ _.baseUrl }}/api/rules/28"
+    name: rules delete
+    description: ""
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -1666257088494.5
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
   - _id: req_1d704bf261a34836884fda67970eaceb
     parentId: wrk_a12405aa64fc4e3b8500cdef7aedf765
-    modified: 1667145870279
+    modified: 1667683863683
     created: 1667145866811
-    url: "{{ _.baseUrl }}/api/feeds"
+    url: "{{ _.baseUrl }}/api/feeds/61/test"
     name: feed list
     description: ""
     method: GET

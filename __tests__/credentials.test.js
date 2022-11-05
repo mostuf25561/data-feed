@@ -9,6 +9,7 @@ const supertest = require("supertest");
 const connections = require("./setup/connections");
 
 let matchObject;
+let idToDelete;
 
 const request = supertest(app);
 const url = "/api/credentials";
@@ -37,6 +38,7 @@ describe("credential endpoint", () => {
       // .expect(200)
       .then((res) => {
         expect(res.body).toStrictEqual(expected);
+        idToDelete = res.body.id;
       });
   });
 
@@ -77,7 +79,7 @@ describe("credential endpoint", () => {
       });
   });
   test("delete credential by id", async () => {
-    const id = 3;
+    const id = idToDelete;
 
     await request
       .delete(url + "/" + id)

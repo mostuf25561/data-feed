@@ -10,6 +10,7 @@ const supertest = require("supertest");
 const connections = require("./setup/connections");
 
 let matchObject;
+let idToDelete;
 
 const request = supertest(app);
 const url = "/api/rules";
@@ -31,7 +32,7 @@ describe("rule endpoint", () => {
       id: expect.any(Number),
       name: "rule3" + currentTime,
       new_value: "new_value3",
-      equality: "lower_then",
+      equality: "lower_than",
       scope: expect.any(String),
       value: expect.any(String),
     };
@@ -40,7 +41,7 @@ describe("rule endpoint", () => {
       .send({
         name: "rule3" + currentTime,
         column_name_alias: "column_name_alias3",
-        equality: "lower_then",
+        equality: "lower_than",
         boolean_combination: "and",
         value: "value3" + Date.now(),
         new_value: "new_value3",
@@ -52,6 +53,7 @@ describe("rule endpoint", () => {
       .expect(200)
       .then((res) => {
         expect(res.body).toStrictEqual(expected);
+        idToDelete = res.body.id;
       });
   });
 
@@ -87,7 +89,7 @@ describe("rule endpoint", () => {
       name: expect.any(String),
       new_value: "new_value3",
       object_notation: null,
-      equality: "lower_then",
+      equality: "lower_than",
       scope: expect.any(String),
       updated_at: null,
       value: "value3",
@@ -105,7 +107,7 @@ describe("rule endpoint", () => {
       });
   });
   test("delete rule by id", async () => {
-    const id = 3;
+    const id = idToDelete;
 
     await request
       .delete(url + "/" + id)
@@ -117,15 +119,15 @@ describe("rule endpoint", () => {
   });
 });
 matchObject = {
-  boolean_combination: "or",
+  boolean_combination: "and",
   created_at: expect.any(String),
-  feed_id: 1,
+  feed_id: 2,
   column_name_alias: expect.any(String),
   id: 1,
   name: expect.any(String),
-  new_value: "new_value1",
+  new_value: "new_value3",
   object_notation: null,
-  equality: "lower_then",
+  equality: "lower_than",
   scope: expect.any(String),
   updated_at: expect.any(String),
   value: expect.any(String),
