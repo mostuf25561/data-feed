@@ -46,7 +46,9 @@ describe("compile rules to sql", () => {
   });
 
   test("generate sql where clause using the rules' time scope", async () => {
-    expect(jsonToSql.sqlTimeScope(rules)).toBe(expectedSqlQueryWithTimeScope);
+    expect(jsonToSql.sqlTimeScope(rules, "created_at")).toBe(
+      expectedSqlQueryWithTimeScope
+    );
   });
 });
 
@@ -64,11 +66,6 @@ describe("generate sql queries", () => {
   test("view json as table", async () => {
     const tableName = "t1";
 
-    // DROP VIEW  IF EXISTS `v`;
-    // CREATE VIEW v AS
-    // SELECT arr.*,
-    //  case when ( '$.age' < 2 or '$.age' > 100 ) then "needs help" else '$.age' end
-    //  FROM t1,
     const expected = `DROP VIEW  IF EXISTS \`v\`;
 CREATE VIEW v AS 
 SELECT arr.* 
@@ -85,26 +82,36 @@ age int  PATH '$.age',name VARCHAR(100)  PATH '$.nested.name')
   test("view with applied conditions", async () => {
     const expected =
       'DROP VIEW IF EXISTS v2; CREATE VIEW v2 AS select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name from v;';
-    expect(
-      jsonToSql.createViewForMinimalColumns(
-        //  rulesWithAlias,
-        rules,
-        "v",
-        "v2"
-      )
-    ).toBe(expected);
+    expect(jsonToSql.createViewForMinimalColumns(rules, "v", "v2")).toBe(
+      expected
+    );
   });
   test("view with aliased columns only", async () => {
     const expected =
-      // "DROP VIEW IF EXISTS v3; CREATE VIEW v3 AS select age as as_age,name as as_name from v2;";
       "DROP VIEW IF EXISTS v3; CREATE VIEW v3 AS select id,created_at,updated_at,age as as_age,name as as_name from v2 where created_at >= '2011-10-06T14:48:00.000Z';";
     const sql = jsonToSql.createViewForAliasedColumns(
       rules,
       "v2",
       "v3",
-      optionalColumns, //time scope
+      optionalColumns, //id, created_at, updated_at
       "created_at", //time scope
       true //prefer older
+    );
+    expect(sql).toBe(expected);
+  });
+  test("view with aliased columns only but without time scope", async () => {
+    rules.forEach((item) => {
+      if (item.scope) {
+        delete item.scope;
+      }
+    });
+    const expected =
+      "DROP VIEW IF EXISTS v3; CREATE VIEW v3 AS select id,created_at,updated_at,age as as_age,name as as_name from v2;";
+    const sql = jsonToSql.createViewForAliasedColumns(
+      rules,
+      "v2",
+      "v3",
+      optionalColumns
     );
     expect(sql).toBe(expected);
   });
