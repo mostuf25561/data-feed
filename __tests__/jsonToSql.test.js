@@ -10,6 +10,7 @@ const exp = require("constants");
 
 let rules;
 let apiEntries;
+const optionalColumns = ["id", "created_at", "updated_at"];
 beforeAll(() => {
   //load rules fixtures
   const rulesPath = path.join(__dirname, "fixtures", "rules.json");
@@ -19,10 +20,40 @@ beforeAll(() => {
   apiEntries = JSON.parse(fs.readFileSync(apiEntriesPath, "utf8"));
 });
 
+describe("compile rules to sql", () => {
+  const expectedSqlQuery =
+    ', case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name';
+
+  const expectedSqlQueryWithTimeScope =
+    " where created_at >= '2011-10-06T14:48:00.000Z'";
+
+  test("use boolean combination rules to generate and group sql conditions", async () => {
+    expect(jsonToSql.convertRulesToSqlInstructions(rules)).toEqual({
+      age: {
+        "doing well": "age < 100",
+        "needs help": "age < 2 or age > 100",
+      },
+      "nested.name": {
+        "has b or c": "name like '%b%' or name like '%c%'",
+      },
+    });
+  });
+
+  test("prepare sql query from sql instruction object", async () => {
+    expect(jsonToSql.convertSqlInsturctionsToSqlQueries(rules)).toBe(
+      expectedSqlQuery
+    );
+  });
+
+  test("generate sql where clause using the rules' time scope", async () => {
+    expect(jsonToSql.sqlTimeScope(rules)).toBe(expectedSqlQueryWithTimeScope);
+  });
+});
+
 describe("generate sql queries", () => {
   beforeAll(() => {});
 
-  test.only("save json to db", async () => {
+  test("save json to db", async () => {
     const expected = `DROP TABLE IF EXISTS t1;CREATE TABLE t1(json_col JSON);INSERT INTO t1 VALUES ('{"arr":${JSON.stringify(
       apiEntries
     )}}');`;
@@ -30,7 +61,7 @@ describe("generate sql queries", () => {
     expect(jsonToSql.storeJsonToDb(apiEntries, "t1")).toBe(expected);
   });
 
-  test.only("view json as table", async () => {
+  test("view json as table", async () => {
     const tableName = "t1";
 
     // DROP VIEW  IF EXISTS `v`;
@@ -51,12 +82,9 @@ age int  PATH '$.age',name VARCHAR(100)  PATH '$.nested.name')
     );
   });
 
-  test.only("view with applied conditions", async () => {
+  test("view with applied conditions", async () => {
     const expected =
-      //"DROP VIEW IF EXISTS `v2`; CREATE VIEW v2 AS select age as as_age,name as as_name from v;";
-      "DROP VIEW IF EXISTS v2; CREATE VIEW v2 AS select *, case when ( name like '%b%' or name like '%c%' ) then \"has b or c\" else name end as as_name from v;";
-    //`select *,
-    //case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like '%b%' or name like '%c%' ) then "has b or c" else name end as as_name from v`;
+      'DROP VIEW IF EXISTS v2; CREATE VIEW v2 AS select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name from v;';
     expect(
       jsonToSql.createViewForMinimalColumns(
         //  rulesWithAlias,
@@ -66,10 +94,18 @@ age int  PATH '$.age',name VARCHAR(100)  PATH '$.nested.name')
       )
     ).toBe(expected);
   });
-  test.only("select only aliased columns", async () => {
+  test("view with aliased columns only", async () => {
     const expected =
-      "DROP VIEW IF EXISTS v3; CREATE VIEW v3 AS select age as as_age,name as as_name from v2;";
-    const sql = jsonToSql.createViewForAliasedColumns(rules, "v2", "v3");
+      // "DROP VIEW IF EXISTS v3; CREATE VIEW v3 AS select age as as_age,name as as_name from v2;";
+      "DROP VIEW IF EXISTS v3; CREATE VIEW v3 AS select id,created_at,updated_at,age as as_age,name as as_name from v2 where created_at >= '2011-10-06T14:48:00.000Z';";
+    const sql = jsonToSql.createViewForAliasedColumns(
+      rules,
+      "v2",
+      "v3",
+      optionalColumns, //time scope
+      "created_at", //time scope
+      true //prefer older
+    );
     expect(sql).toBe(expected);
   });
 });

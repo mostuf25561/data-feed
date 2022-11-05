@@ -4,6 +4,7 @@ const extractService = require("../lib/extractService");
 const constants = require("../lib/constants");
 const fs = require("fs");
 const path = require("path");
+const jsonToSql = require("../lib/jsonToSql");
 
 let rules;
 beforeAll(() => {
@@ -11,7 +12,7 @@ beforeAll(() => {
   rules = JSON.parse(fs.readFileSync(rulesPath, "utf8"));
 });
 
-describe("[data input] extract raw data to rows and columns", () => {
+describe.skip("parse json", () => {
   test("extract all records when data is an array", async () => {
     const data = [{ name: "a" }, { name: "b" }];
 
@@ -62,23 +63,13 @@ describe("[data input] extract raw data to rows and columns", () => {
     expect(res[1]).toEqual({ as_name: "a", as_last: "k" });
   });
 });
-describe("group rules", () => {
-  it("should group rules by service", () => {
-    const columns = Object.keys(
-      extractService.helpers.groupRulesByNotation(rules)
-    );
+describe("parse rules", () => {
+  it("group rules by notation", () => {
+    const columns = Object.keys(extractService.groupRulesByNotation(rules));
     expect(columns).toEqual(["age", "nested.name"]);
   });
-});
-describe("create sql query from rules", () => {
   let data;
   let expected;
-  const expectedSqlQuery =
-    // 'select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( nested.name like \'%b%\' or nested.name like \'%c%\' ) then "has b or c" else nested.name end as as_name';, case when ( name like '%b%' or name like '%c%' ) then \"has b or c\" else name end as as_name"
-    ", case when ( name like '%b%' or name like '%c%' ) then \"has b or c\" else name end as as_name";
-
-  const expectedSqlQueryWithTimeScope =
-    " where created_at > '2011-10-06T14:48:00.000Z'";
 
   beforeAll(async () => {
     data = {
@@ -95,7 +86,7 @@ describe("create sql query from rules", () => {
   });
 
   test("group rules by column notation and by new value (convertion target)", async () => {
-    expect(extractService.helpers.groupRulesByNotation(rules)).toEqual({
+    expect(extractService.groupRulesByNotation(rules)).toEqual({
       "nested.name": {
         "has b or c": [
           {
@@ -154,36 +145,5 @@ describe("create sql query from rules", () => {
         ],
       },
     });
-  });
-
-  test("group rules by json notation and ", async () => {
-    expect(extractService.helpers.convertRulesToSqlInstructions(rules)).toEqual(
-      {
-        age: {
-          "doing well": "age < 100",
-          "needs help": "age < 2 or age > 100",
-        },
-        "nested.name": {
-          // "has b or c": "nested.name like '%b%' or nested.name like '%c%'",
-          "has b or c": "name like '%b%' or name like '%c%'",
-        },
-      }
-    );
-  });
-
-  test("prepare sql query from sql instruction object", async () => {
-    expect(
-      extractService.helpers.convertSqlInsturctionsToSqlQueries(rules, [
-        "id",
-        "created_at",
-        "updated_at",
-      ])
-    ).toBe(expectedSqlQuery);
-  });
-
-  test("prepare sql query from sql instruction object with time scope", async () => {
-    expect(extractService.helpers.sqlTimeScope(rules)).toBe(
-      expectedSqlQueryWithTimeScope
-    );
   });
 });
