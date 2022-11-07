@@ -20,3 +20,4 @@ coverage
 
 *.cache.json
 *.code-workspace
+.lh/

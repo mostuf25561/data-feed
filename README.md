@@ -14,9 +14,21 @@ npm run seed
 ./node_modules/.bin/jest __tests__/*.test.js
 ```
 
+NOW:
+
+- api works:
+- 1. returns a json based table
+- 2. with conditions applied
+
+- split rules table to conditions and rules:
+  -- rule_set:
+  - for where clause:
+    --- scope-column-name  
+    --- scope-column-value
+
 TODOS:
 
-- split rules table to conditions and rules
+- validate feed url
 - test both helper funtions and working against real db
 - test flow
 

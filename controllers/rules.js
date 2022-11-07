@@ -1,4 +1,6 @@
+const jsonToSql = require("../lib/jsonToSql");
 const model = require("../models/rule");
+const feedModel = require("../models/feed");
 
 module.exports = {
   list: async (req, res, next) => {
@@ -75,6 +77,26 @@ module.exports = {
       res.json(result);
     } catch (err) {
       console.error(err);
+      next(err);
+    }
+  },
+
+  test: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const rule = await model.query().findById(id).throwIfNotFound();
+      const feed_id = rule.feed_id;
+      const feed = await feedModel.query().findById(feed_id).throwIfNotFound();
+
+      await jsonToSql.createViewWithAliasedColumns(rule);
+      //feed.tableName
+      // const res = await jsonToSql.createViewWithAliasedColumns(
+      //   feed_id,
+      //   //feed.tableName
+      //   "t1"
+      // );
+      res.json(feed);
+    } catch (err) {
       next(err);
     }
   },

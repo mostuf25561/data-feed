@@ -52,6 +52,17 @@ describe("feed endpoint", () => {
         expect(res.body).toStrictEqual(matchObject);
       });
   });
+  test.skip("test feed by id", async () => {
+    const id = 49;
+
+    await request
+      .get(url + "/" + id + "/test")
+
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBe(1);
+      });
+  });
 
   test("get all feeds", async () => {
     await request

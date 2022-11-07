@@ -1,5 +1,9 @@
 const { request } = require("express");
 const model = require("../models/feed");
+const auth = require("../services/auth");
+const axios = require("axios");
+const _ = require("lodash");
+const jsonToSql = require("../lib/jsonToSql");
 
 module.exports = {
   list: async (req, res, next) => {
@@ -56,12 +60,23 @@ module.exports = {
   },
 
   test: async (req, res, next) => {
-    req.checkParams("id").isInt({ min: 0 });
+    //fetch feed and store to db
+    //TODO: cache data in db and update it when passing force=true
+
+    //TODO: add validations
+    //req.checkParams("id").isInt({ min: 0 });
 
     try {
       const { id } = req.params;
-      const results = await model.query().findById(id).throwIfNotFound();
-      res.send(results);
+      const feed = await model.query().findById(id).throwIfNotFound();
+      // return res.send({ feed });
+      const fetchResult = await auth.getFeedData(feed.url); //getFeedDatacredentials.await axios.get(feed.url);
+      // return res.send({ fetchResult });
+      const entries = _.get(fetchResult, feed.root_notation);
+
+      //save json to the db
+      const result = await jsonToSql.storeJsonToDb(entries, "t1");
+      res.json(result);
     } catch (err) {
       console.error({ err });
       next(err);
