@@ -29,72 +29,19 @@ afterAll(async () => {
 });
 
 describe("execute queries", () => {
-  test("view with aliased columns only but without time scope and optional columns", async () => {
-    const expected = [
-      [
-        {
-          affectedRows: 0,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
-      [
-        {
-          affectedRows: 0,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
-      [
-        {
-          affectedRows: 1,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
-    ];
-
+  test("storeJsonToDb", async () => {
+    const expected = [{ json_col: { arr: apiEntries } }];
     const res = await jsonToSql.storeJsonToDb(apiEntries, "t1");
     expect(res).toEqual(expected);
   });
 
   test("createViewWithAliasedColumns", async () => {
     const expected = [
-      [
-        {
-          affectedRows: 0,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
-      [
-        {
-          affectedRows: 0,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
+      { age: 2, name: "John Smith" },
+      { age: 40, name: "Sally Brown" },
+      { age: 102, name: "John Johnson" },
     ];
+
     const sql = await jsonToSql.createViewWithAliasedColumns(
       rules,
       "t1",
@@ -106,29 +53,26 @@ describe("execute queries", () => {
 
   test("createViewForMinimalColumns", async () => {
     const expected = [
-      [
-        {
-          affectedRows: 0,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
-      [
-        {
-          affectedRows: 0,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
+      {
+        age: 2,
+        as_age: "doing well",
+        as_name: "John Smith",
+        name: "John Smith",
+      },
+      {
+        age: 40,
+        as_age: "doing well",
+        as_name: "has b or c",
+        name: "Sally Brown",
+      },
+      {
+        age: 102,
+        as_age: "needs help",
+        as_name: "John Johnson",
+        name: "John Johnson",
+      },
     ];
+
     const res = await jsonToSql.createViewForMinimalColumns(
       rules,
       "v",
@@ -139,37 +83,12 @@ describe("execute queries", () => {
   });
   test("createViewForAliasedColumns", async () => {
     const expected = [
-      [
-        {
-          affectedRows: 0,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
-      [
-        {
-          affectedRows: 0,
-          fieldCount: 0,
-          info: "",
-          insertId: 0,
-          serverStatus: 2,
-          warningStatus: 0,
-        },
-        undefined,
-      ],
+      { as_age: 2, as_name: "John Smith" },
+      { as_age: 40, as_name: "Sally Brown" },
+      { as_age: 102, as_name: "John Johnson" },
     ];
-    const res = await jsonToSql.createViewForAliasedColumns(
-      rules,
-      "v2",
-      "v3"
-      // optionalColumns,
-      // "created_at", //time scope
-      // true
-    );
+
+    const res = await jsonToSql.createViewForAliasedColumns(rules, "v2", "v3");
     expect(res).toEqual(expected);
   });
 });

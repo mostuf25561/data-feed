@@ -87,7 +87,6 @@ module.exports = {
       const rule = await model.query().findById(id).throwIfNotFound();
       const feed_id = rule.feed_id;
       const feed = await feedModel.query().findById(feed_id).throwIfNotFound();
-
       await jsonToSql.createViewWithAliasedColumns(rule);
       //feed.tableName
       // const res = await jsonToSql.createViewWithAliasedColumns(

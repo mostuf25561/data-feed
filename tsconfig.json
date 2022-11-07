@@ -13,12 +13,12 @@
         "declaration": true,
         "outDir": "dist",
         "strictNullChecks": true,
-        "typeRoots": ["src/@types", "node_modules/@types"],
+        "typeRoots": ["@types", "node_modules/@types"],
         "types": ["node", "jest"],
         "allowJs": true,
         "baseUrl": ".",
         "paths": {
-            "*": ["node_modules/*", "src/*"],
+            "*": ["node_modules/*", "*"],
             "jest/*": ["jest/*"]
         },
         "resolveJsonModule": true
