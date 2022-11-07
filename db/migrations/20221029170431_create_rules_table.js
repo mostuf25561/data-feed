@@ -12,7 +12,6 @@ exports.up = function (knex /*, Promise*/) {
       .references("feeds.id")
       // .inTable("feeds")
       .onDelete("CASCADE");
-    table.string("name", 100).unique().notNull();
     table.string("type", 50).notNull().defaultTo("VARCHAR(100)"); //field object_notation
 
     table.string("object_notation"); //field object_notation

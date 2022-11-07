@@ -28,6 +28,14 @@ exports.seed = function (knex) {
           root_notation: "root_notation",
           credential_id: null,
         },
+        {
+          root_notation: null,
+          name: "name3",
+          description: "description",
+          url: "url1",
+          root_notation: "root_notation",
+          credential_id: null,
+        },
       ]);
     });
 };

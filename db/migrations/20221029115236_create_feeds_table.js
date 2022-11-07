@@ -22,7 +22,7 @@ exports.up = function (knex /*, Promise*/) {
 
     //convert the string value before using it
     table.string("scope_type");
-
+    table.enum("object", ["string", "number", "date", "boolean"]);
     //foreign keys
     table
       .integer("credential_id")

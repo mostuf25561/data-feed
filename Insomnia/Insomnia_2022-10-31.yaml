@@ -59,7 +59,7 @@ resources:
         	
                   "name": "rule1",
                   "field_name": "field_name1",
-                  "operator": "lower_then",
+                  "operator": "lower_than",
                   "connection": "or",
                   "value": "value1",
                   "new_value": "new_value1",
@@ -96,7 +96,7 @@ resources:
         	
                   "name": "rule11",
                   "field_name": "field_name1",
-                  "operator": "lower_then",
+                  "operator": "lower_than",
                   "connection": "or",
                   "value": "value1",
                   "new_value": "new_value1",
