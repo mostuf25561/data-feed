@@ -14,6 +14,15 @@ exports.up = function (knex /*, Promise*/) {
 
     table.string("root_notation");
 
+    //
+    table.string("scope_notation");
+
+    table.string("scope_from");
+    table.string("scope_to");
+
+    //convert the string value before using it
+    table.string("scope_type");
+
     //foreign keys
     table
       .integer("credential_id")

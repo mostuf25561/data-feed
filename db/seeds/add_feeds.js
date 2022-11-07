@@ -12,8 +12,16 @@ exports.seed = function (knex) {
           url: "url1",
           root_notation: null,
           credential_id: null,
+          root_notation: null,
+
+          //to be used on where clause
+          scope_notation: null,
+          scope_from: null,
+          scope_to: null,
+          scope_type: null, //convert the string by type
         },
         {
+          root_notation: null,
           name: "name2",
           description: "description",
           url: "url1",
