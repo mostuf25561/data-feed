@@ -10,7 +10,7 @@
   },
   {
     "object_notation": "age",
-    "equality": "bigger_than",
+    "equality": "greater_than",
     "value": 100,
     "new_value": "needs help",
     "boolean_combination": "or",

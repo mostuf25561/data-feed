@@ -13,7 +13,7 @@ class Feed extends Model {
         modelClass: Rule,
         join: {
           from: "feed.id",
-          to: "rule.feedId",
+          to: "rule.feed_id",
         },
       },
     };

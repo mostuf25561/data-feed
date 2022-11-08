@@ -97,7 +97,7 @@ matchObject = {
   updated_at: expect.any(String),
   name: expect.any(String),
   token: null,
-  password: "password1",
+  password: null,
   url: expect.any(String),
   username: "username",
 };

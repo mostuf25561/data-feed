@@ -7,16 +7,35 @@ const app = require("../app");
 const _ = require("lodash");
 const supertest = require("supertest");
 const connections = require("./setup/connections");
+const { entries } = require("lodash");
+const path = require("path");
+const fs = require("fs");
 
 let matchObject;
 let idToDelete;
+let apiEntries;
+let defaultFeed;
 
 const request = supertest(app);
 const url = "/api/feeds";
 const currentTime = new Date().getTime();
 
+const apiEntriesPath = path.join(__dirname, "fixtures", "api_entries.json");
+const rulesPath = path.join(__dirname, "fixtures", "rules.json");
+
 beforeAll(async () => {
-  connections.connect();
+  await connections.connect();
+  //load rules fixtures
+  rules = JSON.parse(fs.readFileSync(rulesPath, "utf8"));
+  apiEntries = JSON.parse(fs.readFileSync(apiEntriesPath, "utf8"));
+
+  defaultFeed = await helpers.addFeed({
+    name: "name1",
+    description: "description1",
+    url: "url1",
+    root_notation: "nested",
+  });
+  expect(defaultFeed.id).toBeGreaterThan(0);
 });
 afterAll(async () => {
   await connections.disconnect();
@@ -52,18 +71,23 @@ describe("feed endpoint", () => {
         expect(res.body).toStrictEqual(matchObject);
       });
   });
-  test.skip("test feed by id", async () => {
-    const id = 49;
-
+  test.only("/columns - download json from url", async () => {
     await request
-      .get(url + "/" + id + "/test")
-
-      .expect(200)
+      .get(url + "/" + defaultFeed.id + "/columns")
+      //   .expect(200)
       .then((res) => {
-        expect(res.body).toBe(1);
+        expect(res.body).toEqual(_.get(apiEntries, defaultFeed.root_notation));
       });
   });
-
+  //test raw json
+  test.only("/raw - get data stored in json", async () => {
+    await request
+      .get(url + "/" + defaultFeed.id + "/raw")
+      //   .expect(200)
+      .then((res) => {
+        expect(res.body).toEqual(_.get(apiEntries, defaultFeed.root_notation));
+      });
+  });
   test("get all feeds", async () => {
     await request
       .get(url)
@@ -117,4 +141,17 @@ matchObject = {
   url: "url1",
   description: expect.any(String),
   updated_at: expect.any(String),
+  scope_from: null,
+  scope_notation: null,
+  scope_to: null,
+  scope_type: null,
+  hash: null,
+};
+
+const helpers = {
+  addFeed: async (feed) => {
+    feed.name = feed.name + currentTime;
+    const res = await request.post(url).send(feed);
+    return res.body;
+  },
 };

@@ -15,7 +15,6 @@ const connections = require("./setup/connections");
 
 let rules;
 let apiEntries;
-const optionalColumns = ["id", "created_at", "updated_at"];
 beforeAll(() => {
   //load rules fixtures
   const rulesPath = path.join(__dirname, "fixtures", "rules.json");
@@ -35,23 +34,18 @@ describe("execute queries", () => {
     expect(res).toEqual(expected);
   });
 
-  test("createViewWithAliasedColumns", async () => {
+  test("createJsonTableFromJsonColumn", async () => {
     const expected = [
       { age: 2, name: "John Smith" },
       { age: 40, name: "Sally Brown" },
       { age: 102, name: "John Johnson" },
     ];
 
-    const sql = await jsonToSql.createViewWithAliasedColumns(
-      rules,
-      "t1",
-      "v",
-      optionalColumns
-    );
+    const sql = await jsonToSql.createJsonTableFromJsonColumn(rules, "t1", "v");
     expect(sql).toEqual(expected);
   });
 
-  test("createViewForMinimalColumns", async () => {
+  test("caseClause", async () => {
     const expected = [
       {
         age: 2,
@@ -73,22 +67,17 @@ describe("execute queries", () => {
       },
     ];
 
-    const res = await jsonToSql.createViewForMinimalColumns(
-      rules,
-      "v",
-      "v2",
-      optionalColumns
-    );
+    const res = await jsonToSql.caseClause(rules, "v", "v2");
     expect(res).toEqual(expected);
   });
-  test("createViewForAliasedColumns", async () => {
+  test("wrapJsonTable", async () => {
     const expected = [
       { as_age: 2, as_name: "John Smith" },
       { as_age: 40, as_name: "Sally Brown" },
       { as_age: 102, as_name: "John Johnson" },
     ];
 
-    const res = await jsonToSql.createViewForAliasedColumns(rules, "v2", "v3");
+    const res = await jsonToSql.wrapJsonTable(rules, "v2", "v3");
     expect(res).toEqual(expected);
   });
 });
@@ -96,11 +85,10 @@ describe("compile rules to sql", () => {
   const expectedSqlQuery =
     ', case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name';
 
-  const expectedSqlQueryWithTimeScope =
-    " where created_at >= '2011-10-06T14:48:00.000Z'";
-
   test("use boolean combination rules to generate and group sql conditions", async () => {
-    expect(jsonToSql.helpers.convertRulesToSqlInstructions(rules)).toEqual({
+    expect(
+      jsonToSql.helpers.convertRulesToSqlInstructionsObject(rules)
+    ).toEqual({
       age: {
         "doing well": "age < 100",
         "needs help": "age < 2 or age > 100",
@@ -112,15 +100,46 @@ describe("compile rules to sql", () => {
   });
 
   test("prepare sql query from sql instruction object", async () => {
-    expect(jsonToSql.helpers.convertSqlInsturctionsToSqlQueries(rules)).toBe(
-      expectedSqlQuery
-    );
+    expect(jsonToSql.helpers.caseClause(rules)).toBe(expectedSqlQuery);
   });
+  describe.skip("where clause", () => {
+    describe("generate sql where clause feed' scope and scope's range", () => {
+      //use feed from_scope and to_scope to generate a where clause
 
-  test("generate sql where clause using the rules' time scope", async () => {
-    expect(jsonToSql.helpers.sqlTimeScope(rules, "created_at")).toBe(
-      expectedSqlQueryWithTimeScope
-    );
+      //generate sql where clause, between from_scope and to_scope
+      const date_range = {
+        scope: "dt",
+        from_scope: "2011-10-06T14:48:00.000Z",
+        to_scope: "2011-10-06T14:48:00.000Z",
+      };
+      const from_date = {
+        scope: "dt",
+        from_scope: "2011-10-06T14:48:00.000Z",
+      };
+      const from_name_starting_with_b = {
+        scope: "name",
+        from_scope: "2011-10-06T14:48:00.000Z",
+      };
+      const from_name_starting_with_b_till_z = {
+        scope: "name",
+        from_scope: "b",
+        to_scope: "z",
+      };
+      const cases = [
+        // [between_dates, "4"],
+        [from_date, "-4"],
+        // [from_name_starting_with_b, "0"],
+        // [from_name_starting_with_b_till_z, "0"],
+      ];
+      test.each(cases)(
+        "given %p  as arguments, returns %p",
+        (firstArg, expectedResult) => {
+          expect(jsonToSql.helpers.whereClause(firstArg)).toEqual(
+            expectedResult
+          );
+        }
+      );
+    });
   });
 });
 
@@ -143,8 +162,8 @@ describe("generate sql queries", () => {
     const tableSrc = "t1";
     const tableTarget = "v";
 
-    const expected = `DROP VIEW  IF EXISTS v;
-CREATE VIEW v AS 
+    const expected = `DROP TABLE  IF EXISTS v;
+CREATE TABLE v AS 
 SELECT arr.* 
 FROM t1,
 JSON_TABLE(json_col, '$.arr[*]' COLUMNS (
@@ -152,7 +171,7 @@ age int  PATH '$.age',name VARCHAR(100)  PATH '$.nested.name')
 ) arr;`;
 
     expect(
-      jsonToSql.helpers.createViewWithAliasedColumns(
+      jsonToSql.helpers.createJsonTableFromJsonColumn(
         rules,
         tableSrc,
         tableTarget
@@ -162,38 +181,25 @@ age int  PATH '$.age',name VARCHAR(100)  PATH '$.nested.name')
 
   test("view with applied conditions", async () => {
     const expected =
-      'DROP VIEW IF EXISTS v2; CREATE VIEW v2 AS select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name from v;';
-    expect(
-      jsonToSql.helpers.createViewForMinimalColumns(rules, "v", "v2")
-    ).toBe(expected);
+      'DROP TABLE IF EXISTS v2; CREATE TABLE v2 AS select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name from v;';
+    expect(jsonToSql.helpers.caseClause(rules, "v", "v2")).toBe(expected);
   });
-  test("view with aliased columns only", async () => {
+  test.skip("view with aliased columns and where clause", async () => {
     const expected =
-      "DROP VIEW IF EXISTS v3; CREATE VIEW v3 AS select id,created_at,updated_at,age as as_age,name as as_name from v2 where created_at >= '2011-10-06T14:48:00.000Z';";
-    const sql = jsonToSql.helpers.createViewForAliasedColumns(
-      rules,
-      "v2",
-      "v3",
-      optionalColumns, //id, created_at, updated_at
-      "created_at", //time scope
-      true
-    );
+      "DROP TABLE IF EXISTS v3; CREATE TABLE v3 AS select id,created_at,updated_at,age as as_age,name as as_name from v2 where created_at >= '2011-10-06T14:48:00.000Z';";
+
+    const sql = jsonToSql.helpers.wrapJsonTable(rules, "v2", "v3");
     expect(sql).toBe(expected);
   });
-  test("view with aliased columns only but without time scope", async () => {
+  test("view with aliased columns ", async () => {
     rules.forEach((item) => {
       if (item.scope) {
         delete item.scope;
       }
     });
     const expected =
-      "DROP VIEW IF EXISTS v3; CREATE VIEW v3 AS select id,created_at,updated_at,age as as_age,name as as_name from v2;";
-    const sql = jsonToSql.helpers.createViewForAliasedColumns(
-      rules,
-      "v2",
-      "v3",
-      optionalColumns
-    );
+      "DROP TABLE IF EXISTS v3; CREATE TABLE v3 AS select id,created_at,updated_at,age as as_age,name as as_name from v2;";
+    const sql = jsonToSql.helpers.wrapJsonTable(rules, "v2", "v3");
     expect(sql).toBe(expected);
   });
 });
