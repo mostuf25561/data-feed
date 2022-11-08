@@ -12,7 +12,7 @@ class Rule extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Feed,
         join: {
-          from: "rule.feedId",
+          from: "rule.feed_id",
           to: "feed.id",
         },
       },

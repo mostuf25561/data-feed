@@ -10,7 +10,6 @@ exports.up = function (knex /*, Promise*/) {
       .notNull()
       .unsigned()
       .references("feeds.id")
-      // .inTable("feeds")
       .onDelete("CASCADE");
     table.string("type", 50).notNull().defaultTo("VARCHAR(100)"); //field object_notation
 
@@ -27,8 +26,6 @@ exports.up = function (knex /*, Promise*/) {
     table.string("new_value").notNull();
 
     table.timestamps(true, true); //created_at, modified_at
-
-    table.datetime("scope");
 
     table.unique(["object_notation", "value", "equality"]);
   });

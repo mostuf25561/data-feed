@@ -1,5 +1,4 @@
 "use strict";
-//customer_id, id, name, email, password
 exports.up = function (knex /*, Promise*/) {
   return knex.schema.createTable("feeds", function (table) {
     table.engine("Innodb");
@@ -13,16 +12,13 @@ exports.up = function (knex /*, Promise*/) {
     table.string("url").notNull();
 
     table.string("root_notation");
-
-    //
     table.string("scope_notation");
-
     table.string("scope_from");
     table.string("scope_to");
+    table.string("hash", 40);
 
     //convert the string value before using it
     table.string("scope_type");
-    table.enum("object", ["string", "number", "date", "boolean"]);
     //foreign keys
     table
       .integer("credential_id")

@@ -42,7 +42,7 @@ exports.seed = function (knex) {
           new_value: "has b or c",
           boolean_combination: "or",
           column_name_alias: "as_name",
-          scope: "2011-10-06T14:48:00",
+
           type: "VARCHAR(100)",
           feed_id: 1,
         },
@@ -53,7 +53,7 @@ exports.seed = function (knex) {
           new_value: "has b or c",
           boolean_combination: "or",
           column_name_alias: "as_name",
-          scope: "2012-10-06T14:48:00",
+
           type: "VARCHAR(100)",
           feed_id: 1,
         },
@@ -63,7 +63,7 @@ exports.seed = function (knex) {
           boolean_combination: "or",
           value: "value1",
           new_value: "new_value1",
-          scope: "2021-10-29 11:52:50",
+
           feed_id: 3,
         },
         {
@@ -72,7 +72,7 @@ exports.seed = function (knex) {
           boolean_combination: "or",
           value: "value2",
           new_value: "new_value2",
-          scope: "2021-10-29 11:52:50",
+
           feed_id: 3,
         },
       ]);

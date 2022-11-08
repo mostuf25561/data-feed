@@ -8,6 +8,10 @@ const express = require("express"),
 router.get("/", controller.list);
 router.get("/:id", controller.get);
 router.get("/:id/test", controller.test);
+router.get("/:id/raw", controller.test);
+router.get("/:id/table", controller.test);
+router.get("/:id/columns", controller.test);
+
 router.delete("/:id", controller.delete);
 
 router.put("/:id", controller.update);

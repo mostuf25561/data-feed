@@ -36,7 +36,6 @@ module.exports = {
   create: async (req, res, next) => {
     try {
       const {
-        name,
         column,
         scope,
         equality,
@@ -48,7 +47,6 @@ module.exports = {
         object_notation,
       } = req.body;
       const results = await model.query().insert({
-        name,
         column,
         scope,
         equality,
@@ -81,15 +79,16 @@ module.exports = {
     }
   },
 
+  //TODO: remove it
   test: async (req, res, next) => {
     try {
       const { id } = req.params;
       const rule = await model.query().findById(id).throwIfNotFound();
       const feed_id = rule.feed_id;
       const feed = await feedModel.query().findById(feed_id).throwIfNotFound();
-      await jsonToSql.createViewWithAliasedColumns(rule);
+      await jsonToSql.createJsonTableFromJsonColumn(rule);
       //feed.tableName
-      // const res = await jsonToSql.createViewWithAliasedColumns(
+      // const res = await jsonToSql.createJsonTableFromJsonColumn(
       //   feed_id,
       //   //feed.tableName
       //   "t1"

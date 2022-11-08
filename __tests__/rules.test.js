@@ -30,24 +30,19 @@ describe("rule endpoint", () => {
       feed_id: 2,
       column_name_alias: "column_name_alias3",
       id: expect.any(Number),
-      name: "rule3" + currentTime,
       new_value: "new_value3",
       equality: "lower_than",
-      scope: expect.any(String),
       value: expect.any(String),
     };
     await request
       .post(url)
       .send({
-        name: "rule3" + currentTime,
         column_name_alias: "column_name_alias3",
         equality: "lower_than",
         boolean_combination: "and",
         value: "value3" + Date.now(),
         new_value: "new_value3",
-        updated_at: "2021-10-29 11:52:50",
-        created_at: "2021-10-29 11:52:50",
-        scope: "2021-10-29 11:52:50",
+
         feed_id: 2,
       })
       .expect(200)
@@ -86,11 +81,9 @@ describe("rule endpoint", () => {
       feed_id: 2,
       column_name_alias: expect.any(String),
       id: 3,
-      name: expect.any(String),
       new_value: "new_value3",
       object_notation: null,
       equality: "lower_than",
-      scope: expect.any(String),
       updated_at: null,
       value: "value3",
     };
@@ -98,10 +91,9 @@ describe("rule endpoint", () => {
     await request
       .put(url + "/" + id)
       .send({
-        name: "degrees1" + currentTime,
         column_name_alias: "aaaa" + currentTime,
       })
-      .expect(200)
+      // .expect(200)
       .then((res) => {
         expect(res.body).toStrictEqual(matchObject);
       });
@@ -118,18 +110,18 @@ describe("rule endpoint", () => {
       });
   });
 });
+
 matchObject = {
-  boolean_combination: "and",
+  object_notation: "age",
+  scope: null,
+  type: "int",
+  boolean_combination: "or",
   created_at: expect.any(String),
-  feed_id: 2,
+  feed_id: 1,
   column_name_alias: expect.any(String),
-  id: 1,
-  name: expect.any(String),
-  new_value: "new_value3",
-  object_notation: null,
+  id: expect.any(Number),
+  new_value: "needs help",
   equality: "lower_than",
-  scope: expect.any(String),
   updated_at: expect.any(String),
   value: expect.any(String),
-  type: "VARCHAR(100)",
 };

@@ -14,9 +14,37 @@ npm run seed
 ./node_modules/.bin/jest __tests__/*.test.js
 ```
 
+FLOW:
+
+- add a feed
+- view it
+
+- add few rules
+- view it
+
+- add time scope
+- view it
+
+- add column aliases
+- view it
+
 NOW:
 
+- npx jest **tests**/feeds.test.js --watch
 - api works:
+  feed:
+- 0. test:
+     -- if exists
+- 1. create: return table
+- 2. edit:
+- ## view
+- update
+  -- select
+
+- 2.  on rules create -> return table with applied conditions
+- 2.1 apply aliased
+- 2.2 apply apply
+-
 - 1. returns a json based table
 - 2. with conditions applied
 
