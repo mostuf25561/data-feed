@@ -1,25 +1,23 @@
-{
-  "nested": [
-    {
-      "nested": { "name": "John Smith2" },
-      "address": "780 Mission St, San Francisco, CA 94103",
-      "age": 2,
-      "updated_at": "2021-10-29 11:52:50",
-      "created_at": "2020-10-29 11:52:50"
-    },
-    {
-      "nested": { "name": "Sally Brown" },
-      "address": "75 37th Ave S, St Cloud, MN 94103",
-      "age": 40,
-      "updated_at": "2022-10-29 11:52:50",
-      "created_at": "2022-10-29 11:52:50"
-    },
-    {
-      "nested": { "name": "John Johnson" },
-      "address": "1262 Roosevelt Trail, Raymond, ME 04071",
-      "age": 102,
-      "updated_at": "2021-10-29 11:52:50",
-      "created_at": "2019-10-29 11:52:50"
-    }
-  ]
-}
+[
+  {
+    "nested": { "name": "John Smith2" },
+    "address": "780 Mission St, San Francisco, CA 94103",
+    "age": 2,
+    "updated_at": "2021-10-29 11:52:50",
+    "created_at": "2020-10-29 11:52:50"
+  },
+  {
+    "nested": { "name": "Sally Brown" },
+    "address": "75 37th Ave S, St Cloud, MN 94103",
+    "age": 40,
+    "updated_at": "2022-10-29 11:52:50",
+    "created_at": "2022-10-29 11:52:50"
+  },
+  {
+    "nested": { "name": "John Johnson" },
+    "address": "1262 Roosevelt Trail, Raymond, ME 04071",
+    "age": 102,
+    "updated_at": "2021-10-29 11:52:50",
+    "created_at": "2019-10-29 11:52:50"
+  }
+]

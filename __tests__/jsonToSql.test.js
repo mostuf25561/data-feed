@@ -26,8 +26,8 @@ beforeAll(() => {
 afterAll(async () => {
   await connections.disconnect();
 });
-describe.only("jsonToSql", () => {
-  describe.skip("execute queries", () => {
+describe("jsonToSql", () => {
+  describe("execute queries", () => {
     test("storeJsonToDb", async () => {
       const expected = [{ json_col: { arr: apiEntries } }];
       const res = await jsonToSql.storeJsonToDb(apiEntries, "t1");
@@ -36,17 +36,17 @@ describe.only("jsonToSql", () => {
 
     test("createJsonTableFromJsonColumn", async () => {
       const expected = [
-        { age: 2, name: "John Smith" },
-        { age: 40, name: "Sally Brown" },
-        { age: 102, name: "John Johnson" },
+        { from_age: 2, from_nested__name: "John Smith2" },
+        { from_age: 40, from_nested__name: "Sally Brown" },
+        { from_age: 102, from_nested__name: "John Johnson" },
       ];
 
-      const sql = await jsonToSql.createJsonTableFromJsonColumn(
+      const obj = await jsonToSql.createJsonTableFromJsonColumn(
         rules,
         "t1",
         "v"
       );
-      expect(sql).toEqual(expected);
+      expect(obj).toEqual(expected);
     });
   });
   describe("compile rules to sql", () => {
@@ -157,7 +157,7 @@ describe.only("jsonToSql", () => {
   describe("generate sql queries", () => {
     beforeAll(() => {});
 
-    test.only("save json to db", async () => {
+    test("save json to db", async () => {
       const expected = [
         ["DROP TABLE IF EXISTS t1"],
         ["CREATE TABLE t1(json_col JSON)"],
@@ -167,7 +167,7 @@ describe.only("jsonToSql", () => {
       expect(res[0].json_col.arr).toEqual(apiEntries);
     });
 
-    test.only("view json as table", async () => {
+    test("view json as table", async () => {
       const tableSrc = "t1";
       const tableTarget = "v";
 
@@ -176,7 +176,7 @@ CREATE TABLE v AS
 SELECT arr.* 
 FROM t1,
 JSON_TABLE(json_col, '$.arr[*]' COLUMNS (
-from.age int  PATH '$.age',from.nested.name VARCHAR(100)  PATH '$.nested.name')
+from_age int  PATH '$.age',from_nested__name VARCHAR(100)  PATH '$.nested.name')
 ) arr;`;
 
       expect(
@@ -188,13 +188,13 @@ from.age int  PATH '$.age',from.nested.name VARCHAR(100)  PATH '$.nested.name')
       ).toBe(expected);
     });
 
-    test.only("view with applied conditions", async () => {
+    test("view with applied conditions", async () => {
       const expected =
         ', case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name';
       // 'DROP TABLE IF EXISTS v2; CREATE TABLE v2 AS select *, case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name from v;';
       expect(jsonToSql.clause.caseClause(rules, "v", "v2")).toBe(expected);
     });
-    test.only("view with aliased columns and where clause", async () => {
+    test("view with aliased columns and where clause", async () => {
       const expected =
         "DROP TABLE IF EXISTS v3; CREATE TABLE v3 AS select age as as_age,name as as_name from v2;";
       // "DROP TABLE IF EXISTS v3; CREATE TABLE v3 AS select id,created_at,updated_at,age as as_age,name as as_name from v2 where created_at >= '2011-10-06T14:48:00.000Z';";
@@ -202,7 +202,7 @@ from.age int  PATH '$.age',from.nested.name VARCHAR(100)  PATH '$.nested.name')
       const sql = jsonToSql.clause.wrapJsonTable(rules, "v2", "v3");
       expect(sql).toBe(expected);
     });
-    test.only("view with aliased columns ", async () => {
+    test("view with aliased columns ", async () => {
       rules.forEach((item) => {
         if (item.scope) {
           delete item.scope;
