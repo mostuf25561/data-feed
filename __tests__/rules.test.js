@@ -113,7 +113,6 @@ describe("rule endpoint", () => {
 
 matchObject = {
   object_notation: "age",
-  scope: null,
   type: "int",
   boolean_combination: "or",
   created_at: expect.any(String),

@@ -8,9 +8,9 @@ const express = require("express"),
 router.get("/", controller.list);
 router.get("/:id", controller.get);
 router.get("/:id/test", controller.test);
-router.get("/:id/raw", controller.test);
+router.get("/:id/raw", controller.raw);
 router.get("/:id/table", controller.test);
-router.get("/:id/columns", controller.test);
+router.get("/:id/columns", controller.columns);
 
 router.delete("/:id", controller.delete);
 
