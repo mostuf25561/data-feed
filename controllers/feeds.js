@@ -1,13 +1,13 @@
-const { request } = require("express");
+const { request, json } = require("express");
 const model = require("../models/feed");
 const ruleModel = require("../models/rule");
+const rulesModel = require("../models/rule");
 
 const auth = require("../services/auth");
 const axios = require("axios");
 const _ = require("lodash");
 const jsonToSql = require("../lib/jsonToSql");
 const Hashids = require("hashids");
-const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
 const hashids = new Hashids();
@@ -66,9 +66,26 @@ module.exports = {
     }
   },
 
-  columns: async (req, res, next) => {},
+  columns: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const feed = await model.query().findById(id).throwIfNotFound();
+
+      const rules = await rulesModel
+        .query()
+        .findById(feed.id)
+        .throwIfNotFound();
+
+      res.json(feed);
+      // jsonToSql.createJsonTableFromJsonColumn(feed);
+    } catch (err) {
+      next(err);
+    }
+  },
   table: async (req, res, next) => {},
-  raw: async (req, res, next) => {},
+  raw: async (req, res, next) => {
+    res.json(null);
+  },
   //fetch new data and save it to the database if its not exists
   test: async (req, res, next) => {
     //fetch feed and store to db

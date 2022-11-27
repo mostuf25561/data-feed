@@ -3,7 +3,9 @@
 jest.setTimeout(100000);
 
 ("use strict");
+const extractService = require("../lib/extractService");
 const app = require("../app");
+//import lodash
 const _ = require("lodash");
 const supertest = require("supertest");
 const connections = require("./setup/connections");
@@ -12,12 +14,21 @@ const path = require("path");
 const fs = require("fs");
 
 let matchObject;
+
 let idToDelete;
 let apiEntries;
 let defaultFeed;
+let addedFeed;
+let rules;
 
+const toBeAdded = {
+  name: "name1",
+  description: "description1",
+  url: "url1",
+  root_notation: null, //"nested",
+};
 const request = supertest(app);
-const url = "/api/feeds";
+const feedsEndpoint = "/api/feeds";
 const currentTime = new Date().getTime();
 
 const apiEntriesPath = path.join(__dirname, "fixtures", "api_entries.json");
@@ -29,13 +40,8 @@ beforeAll(async () => {
   rules = JSON.parse(fs.readFileSync(rulesPath, "utf8"));
   apiEntries = JSON.parse(fs.readFileSync(apiEntriesPath, "utf8"));
 
-  defaultFeed = await helpers.addFeed({
-    name: "name1",
-    description: "description1",
-    url: "url1",
-    root_notation: "nested",
-  });
-  expect(defaultFeed.id).toBeGreaterThan(0);
+  addedFeed = await helpers.addFeed(toBeAdded);
+  expect(addedFeed.id).toBeGreaterThan(0);
 });
 afterAll(async () => {
   await connections.disconnect();
@@ -49,7 +55,7 @@ describe("feed endpoint", () => {
       id: expect.any(Number),
     };
     await request
-      .post(url)
+      .post(feedsEndpoint)
       .send({
         name: "name0" + currentTime,
         url: "url0" + currentTime,
@@ -62,35 +68,41 @@ describe("feed endpoint", () => {
   });
 
   test("get feed by id", async () => {
-    const id = 1;
+    const { id } = addedFeed;
 
     await request
-      .get(url + "/" + id)
+      .get(feedsEndpoint + "/" + id)
       .expect(200)
       .then((res) => {
         expect(res.body).toStrictEqual(matchObject);
       });
   });
-  test.only("/columns - download json from url", async () => {
+  test("/columns - download json from url", async () => {
     await request
-      .get(url + "/" + defaultFeed.id + "/columns")
+      .get(feedsEndpoint + "/" + addedFeed.id)
       //   .expect(200)
       .then((res) => {
-        expect(res.body).toEqual(_.get(apiEntries, defaultFeed.root_notation));
+        expect(res.body).toStrictEqual(
+          { ...matchObject, ...toBeAdded }
+          // extractService.getObjecByRootNotation(
+          //   res.body,
+          //   addedFeed.root_notation
+          // )
+        );
       });
   });
   //test raw json
-  test.only("/raw - get data stored in json", async () => {
+  test.skip("/raw - get data stored in json", async () => {
     await request
-      .get(url + "/" + defaultFeed.id + "/raw")
+      .get(feedsEndpoint + "/" + addedFeed.id + "/raw")
       //   .expect(200)
       .then((res) => {
-        expect(res.body).toEqual(_.get(apiEntries, defaultFeed.root_notation));
+        expect(res.body).toEqual(_.get(apiEntries, addedFeed.root_notation));
       });
   });
   test("get all feeds", async () => {
     await request
-      .get(url)
+      .get(feedsEndpoint)
       .expect(200)
       .then((res) => {
         expect(res.body[0]).toStrictEqual(matchObject);
@@ -103,7 +115,7 @@ describe("feed endpoint", () => {
     const expected = {};
 
     await request
-      .put(url + "/" + id)
+      .put(feedsEndpoint + "/" + id)
       .send({
         name: "degrees1" + currentTime,
         description: "description0",
@@ -120,7 +132,7 @@ describe("feed endpoint", () => {
     const id = idToDelete;
 
     await request
-      .delete(url + "/" + id)
+      .delete(feedsEndpoint + "/" + id)
 
       .expect(200)
       .then((res) => {
@@ -132,9 +144,8 @@ describe("feed endpoint", () => {
 matchObject = {
   created_at: expect.any(String),
 
-  id: 1,
+  id: expect.any(Number),
   name: expect.any(String),
-  created_at: expect.any(String),
   root_notation: null,
 
   credential_id: null,
@@ -147,11 +158,17 @@ matchObject = {
   scope_type: null,
   hash: null,
 };
+defaultFeed = {
+  name: "name1",
+  description: "description1",
+  url: "url1",
+  root_notation: null, //"nested",
+};
 
 const helpers = {
   addFeed: async (feed) => {
     feed.name = feed.name + currentTime;
-    const res = await request.post(url).send(feed);
+    const res = await request.post(feedsEndpoint).send(feed);
     return res.body;
   },
 };

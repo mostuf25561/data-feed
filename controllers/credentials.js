@@ -1,5 +1,14 @@
+const { request, json } = require("express");
 const model = require("../models/credential");
 
+const auth = require("../services/auth");
+const axios = require("axios");
+const _ = require("lodash");
+const jsonToSql = require("../lib/jsonToSql");
+const Hashids = require("hashids");
+const crypto = require("crypto");
+
+const hashids = new Hashids();
 module.exports = {
   list: async (req, res, next) => {
     try {
