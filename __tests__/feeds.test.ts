@@ -14,6 +14,7 @@ const path = require("path");
 const fs = require("fs");
 
 let matchObject;
+let matchRuleObject;
 
 let idToDelete;
 let apiEntries;
@@ -41,6 +42,7 @@ beforeAll(async () => {
   apiEntries = JSON.parse(fs.readFileSync(apiEntriesPath, "utf8"));
 
   addedFeed = await helpers.addFeed(toBeAdded);
+
   expect(addedFeed.id).toBeGreaterThan(0);
 });
 afterAll(async () => {
@@ -77,27 +79,42 @@ describe("feed endpoint", () => {
         expect(res.body).toStrictEqual(matchObject);
       });
   });
-  test("/columns - download json from url", async () => {
+  test.only("/rules - get rules belong to some feed", async () => {
+    const id = 1;
     await request
-      .get(feedsEndpoint + "/" + addedFeed.id)
-      //   .expect(200)
+      .get(feedsEndpoint + "/" + id + "/rules")
+      .expect(200)
       .then((res) => {
-        expect(res.body).toStrictEqual(
-          { ...matchObject, ...toBeAdded }
-          // extractService.getObjecByRootNotation(
-          //   res.body,
-          //   addedFeed.root_notation
-          // )
-        );
+        expect(res.body.rules.length).toBeGreaterThan(0);
+        expect(res.body.rules[0]).toStrictEqual(matchRuleObject);
       });
   });
+
   //test raw json
-  test.skip("/raw - get data stored in json", async () => {
+  test.only("/raw - get data stored in json", async () => {
+    const id = 1;
+
     await request
-      .get(feedsEndpoint + "/" + addedFeed.id + "/raw")
-      //   .expect(200)
+      .get(feedsEndpoint + "/" + id + "/raw")
+      .expect(200)
       .then((res) => {
-        expect(res.body).toEqual(_.get(apiEntries, addedFeed.root_notation));
+        expect(res.body).toEqual(apiEntries); //_.get(apiEntries, addedFeed.root_notation));
+      });
+  });
+  test.only("/columns - download json from url", async () => {
+    const id = 1;
+
+    await request
+      .get(feedsEndpoint + "/" + id + "/columns")
+      // .expect(200)
+      .then((res) => {
+        expect(res.body).toBe(1); //(
+        //   { ...matchObject, ...toBeAdded }
+        //   // extractService.getObjecByRootNotation(
+        //   //   res.body,
+        //   //   addedFeed.root_notation
+        //   // )
+        // );
       });
   });
   test("get all feeds", async () => {
@@ -165,6 +182,19 @@ defaultFeed = {
   root_notation: null, //"nested",
 };
 
+matchRuleObject = {
+  object_notation: expect.any(String),
+  type: expect.any(String),
+  boolean_combination: expect.any(String),
+  created_at: expect.any(String),
+  feed_id: expect.any(Number),
+  column_name_alias: expect.any(String),
+  id: expect.any(Number),
+  new_value: expect.any(String),
+  equality: expect.any(String),
+  updated_at: expect.any(String),
+  value: expect.any(String),
+};
 const helpers = {
   addFeed: async (feed) => {
     feed.name = feed.name + currentTime;

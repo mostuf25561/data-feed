@@ -12,8 +12,8 @@ class Rule extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Feed,
         join: {
-          from: "rule.feed_id",
-          to: "feed.id",
+          from: "rules.feed_id",
+          to: "feeds.id",
         },
       },
     };

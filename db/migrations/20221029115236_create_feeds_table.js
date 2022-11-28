@@ -16,6 +16,7 @@ exports.up = function (knex /*, Promise*/) {
     table.string("scope_from");
     table.string("scope_to");
     table.string("hash", 40);
+    table.string("json_table_name");
 
     //convert the string value before using it
     table.string("scope_type");

@@ -11,6 +11,7 @@ router.get("/:id/test", controller.test);
 router.get("/:id/raw", controller.raw);
 router.get("/:id/table", controller.test);
 router.get("/:id/columns", controller.columns);
+router.get("/:id/rules", controller.rules);
 
 router.delete("/:id", controller.delete);
 

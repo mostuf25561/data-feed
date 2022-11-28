@@ -66,15 +66,20 @@ module.exports = {
     }
   },
 
-  columns: async (req, res, next) => {
+  rules: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const feed = await model.query().findById(id).throwIfNotFound();
-
-      const rules = await rulesModel
+      const feed = await model
         .query()
-        .findById(feed.id)
+        .findById(id)
+        .withGraphFetched("rules")
+
         .throwIfNotFound();
+
+      // const rules = await rulesModel
+      //   .query()
+      //   .findById(feed.id)
+      //   .throwIfNotFound();
 
       res.json(feed);
       // jsonToSql.createJsonTableFromJsonColumn(feed);
@@ -82,12 +87,46 @@ module.exports = {
       next(err);
     }
   },
+  columns: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const feed = await model
+        .query()
+        .findById(id)
+        .withGraphFetched("rules")
+        .throwIfNotFound();
+
+      // const rules = await rulesModel
+      //   .query()
+      //   .findById(feed.id)
+      //   .throwIfNotFound();
+
+      const resTableNew = jsonToSql.createJsonTableFromJsonColumn(
+        feed.rules,
+        feed.json_table_name,
+        "v" + feed.json_table_name
+      );
+      res.json(resTableNew);
+    } catch (err) {
+      next(err);
+    }
+  },
   table: async (req, res, next) => {},
-  raw: async (req, res, next) => {
-    res.json(null);
+  test: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+
+      const feed = await model.query().findById(id).throwIfNotFound();
+      console.log({ feed });
+      const fetchResult = await auth.getFeedData(feed);
+      res.json(fetchResult);
+      // jsonToSql.createJsonTableFromJsonColumn(feed);
+    } catch (err) {
+      next(err);
+    }
   },
   //fetch new data and save it to the database if its not exists
-  test: async (req, res, next) => {
+  raw: async (req, res, next) => {
     //fetch feed and store to db
     //TODO: cache data in db and update it when passing force=true
 
@@ -103,6 +142,7 @@ module.exports = {
       console.log({ feed });
       const fetchResult = await auth.getFeedData(feed);
 
+      //fetch new json data
       if (_.isEmpty(fetchResult)) {
         throw new Error("no data found");
       }
@@ -114,26 +154,7 @@ module.exports = {
           "no entries found on root notation: " + feed.root_notation
         );
       }
-
-      const hash = crypto
-        .createHash("md5")
-        .update(JSON.stringify(fetchResult))
-        .digest("hex");
-
-      if (hash === feed.hash) {
-        console.log("skip saving data");
-      } else {
-        console.log("save data");
-
-        await jsonToSql.storeJsonToDb(entries, "t11");
-
-        if (!_.isEmpty(hash)) {
-          await model
-            .query()
-            .updateAndFetchById(id, { hash })
-            .throwIfNotFound();
-        }
-      }
+      await update_json_table_and_hash(feed, entries);
 
       return res.json(entries);
     } catch (err) {
@@ -142,3 +163,25 @@ module.exports = {
     }
   },
 };
+async function update_json_table_and_hash(feed, fetchResult) {
+  const id = feed.id;
+  const hash = crypto
+    .createHash("md5")
+    .update(JSON.stringify(fetchResult))
+    .digest("hex");
+
+  if (hash === feed.hash) {
+    console.log("skip saving data");
+  } else {
+    console.log("save data");
+    const json_table_name = "t11" + Date.now();
+    await jsonToSql.storeJsonToDb(entries, json_table_name);
+
+    if (!_.isEmpty(hash)) {
+      await model
+        .query()
+        .updateAndFetchById(id, { hash, json_table_name })
+        .throwIfNotFound();
+    }
+  }
+}

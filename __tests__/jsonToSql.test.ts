@@ -171,13 +171,12 @@ describe("jsonToSql", () => {
       const tableSrc = "t1";
       const tableTarget = "v";
 
-      const expected = `DROP TABLE  IF EXISTS v;
-CREATE TABLE v AS 
-SELECT arr.* 
-FROM t1,
-JSON_TABLE(json_col, '$.arr[*]' COLUMNS (
-from_age int  PATH '$.age',from_nested__name VARCHAR(100)  PATH '$.nested.name')
-) arr;`;
+      const expected = [
+        ["DROP TABLE IF EXISTS v"],
+        [
+          "CREATE TABLE v AS SELECT arr.* FROM t1, JSON_TABLE(json_col, '$.arr[*]' COLUMNS ( from_age int  PATH '$.age',from_nested__name VARCHAR(100)  PATH '$.nested.name') ) arr;",
+        ],
+      ];
 
       expect(
         jsonToSql.helpers.createJsonTableFromJsonColumn(
@@ -185,7 +184,7 @@ from_age int  PATH '$.age',from_nested__name VARCHAR(100)  PATH '$.nested.name')
           tableSrc,
           tableTarget
         )
-      ).toBe(expected);
+      ).toEqual(expected);
     });
 
     test("view with applied conditions", async () => {
