@@ -36,7 +36,7 @@ exports.seed = function (knex) {
           feed_id: 1,
         },
         {
-          object_notation: "name",
+          object_notation: "nested.name",
           equality: "contains",
           value: "b",
           new_value: "has b or c",
@@ -47,7 +47,7 @@ exports.seed = function (knex) {
           feed_id: 1,
         },
         {
-          object_notation: "name",
+          object_notation: "nested.name",
           equality: "contains",
           value: "c",
           new_value: "has b or c",

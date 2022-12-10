@@ -1,5 +1,7 @@
 /// <reference types='jest'/>
 
+//TODO: test caching (skip saving for same hash)
+
 jest.setTimeout(100000);
 
 ("use strict");
@@ -76,10 +78,14 @@ describe("feed endpoint", () => {
       .get(feedsEndpoint + "/" + id)
       .expect(200)
       .then((res) => {
-        expect(res.body).toStrictEqual(matchObject);
+        expect(res.body).toStrictEqual({
+          ...matchObject,
+          hash: null,
+          json_table_name: null,
+        });
       });
   });
-  test.only("/rules - get rules belong to some feed", async () => {
+  test("/rules - get rules belong to some feed", async () => {
     const id = 1;
     await request
       .get(feedsEndpoint + "/" + id + "/rules")
@@ -91,7 +97,8 @@ describe("feed endpoint", () => {
   });
 
   //test raw json
-  test.only("/raw - get data stored in json", async () => {
+  //TODO: add option to extract data by stored root notation
+  test("/raw - get data stored in json", async () => {
     const id = 1;
 
     await request
@@ -101,14 +108,18 @@ describe("feed endpoint", () => {
         expect(res.body).toEqual(apiEntries); //_.get(apiEntries, addedFeed.root_notation));
       });
   });
-  test.only("/columns - download json from url", async () => {
+  test("/columns - get data as table (depends on creating a table using :id/raw first)", async () => {
     const id = 1;
-
+    const expected = [
+      { as_age: 2, as_name: "John Smith2" },
+      { as_age: 40, as_name: "Sally Brown" },
+      { as_age: 102, as_name: "John Johnson" },
+    ];
     await request
       .get(feedsEndpoint + "/" + id + "/columns")
       // .expect(200)
       .then((res) => {
-        expect(res.body).toBe(1); //(
+        expect(res.body).toEqual(expected); //(
         //   { ...matchObject, ...toBeAdded }
         //   // extractService.getObjecByRootNotation(
         //   //   res.body,
@@ -160,6 +171,7 @@ describe("feed endpoint", () => {
 
 matchObject = {
   created_at: expect.any(String),
+  json_table_name: expect.any(String),
 
   id: expect.any(Number),
   name: expect.any(String),
@@ -173,7 +185,7 @@ matchObject = {
   scope_notation: null,
   scope_to: null,
   scope_type: null,
-  hash: null,
+  hash: expect.any(String),
 };
 defaultFeed = {
   name: "name1",

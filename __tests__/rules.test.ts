@@ -73,29 +73,30 @@ describe("rule endpoint", () => {
   });
 
   test("update rule by id", async () => {
-    const id = 1;
+    const id = idToDelete;
 
     const expected = {
       boolean_combination: "and",
-      created_at: null,
+      created_at: expect.any(String),
       feed_id: 2,
       column_name_alias: expect.any(String),
-      id: 3,
-      new_value: "new_value3",
+      id: expect.any(Number),
+      new_value: expect.any(String),
       object_notation: null,
       equality: "lower_than",
-      updated_at: null,
-      value: "value3",
+      updated_at: expect.any(String),
+      value: expect.any(String),
+      type: "VARCHAR(100)",
     };
 
     await request
       .put(url + "/" + id)
       .send({
-        column_name_alias: "aaaa" + currentTime,
+        new_value: "new value 4",
       })
       // .expect(200)
       .then((res) => {
-        expect(res.body).toStrictEqual(matchObject);
+        expect(res.body).toStrictEqual(expected);
       });
   });
   test("delete rule by id", async () => {

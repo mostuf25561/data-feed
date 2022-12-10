@@ -15,6 +15,8 @@ const connections = require("./setup/connections");
 
 let rules;
 let apiEntries;
+const currentTime = new Date().getTime();
+
 beforeAll(() => {
   //load rules fixtures
   const rulesPath = path.join(__dirname, "fixtures", "rules.json");
@@ -27,28 +29,6 @@ afterAll(async () => {
   await connections.disconnect();
 });
 describe("jsonToSql", () => {
-  describe("execute queries", () => {
-    test("storeJsonToDb", async () => {
-      const expected = [{ json_col: { arr: apiEntries } }];
-      const res = await jsonToSql.storeJsonToDb(apiEntries, "t1");
-      expect(res).toEqual(expected);
-    });
-
-    test("createJsonTableFromJsonColumn", async () => {
-      const expected = [
-        { from_age: 2, from_nested__name: "John Smith2" },
-        { from_age: 40, from_nested__name: "Sally Brown" },
-        { from_age: 102, from_nested__name: "John Johnson" },
-      ];
-
-      const obj = await jsonToSql.createJsonTableFromJsonColumn(
-        rules,
-        "t1",
-        "v"
-      );
-      expect(obj).toEqual(expected);
-    });
-  });
   describe("compile rules to sql", () => {
     const expectedSqlQuery =
       ', case when ( age < 2 or age > 100 ) then "needs help" when ( age < 100 ) then "doing well" else age end as as_age, case when ( name like \'%b%\' or name like \'%c%\' ) then "has b or c" else name end as as_name';
@@ -155,26 +135,25 @@ describe("jsonToSql", () => {
   });
 
   describe("generate sql queries", () => {
-    beforeAll(() => {});
-
     test("save json to db", async () => {
+      const tableTarget = "tableTarget_" + currentTime;
       const expected = [
-        ["DROP TABLE IF EXISTS t1"],
-        ["CREATE TABLE t1(json_col JSON)"],
-        ["INSERT INTO t1 VALUES (?)", expect.any(Array)],
+        [`DROP TABLE IF EXISTS ${tableTarget}}`],
+        [`CREATE TABLE ${tableTarget} (json_col JSON)`],
+        [`INSERT INTO ${tableTarget} VALUES (?)`, expect.any(Array)],
       ];
-      const res = await jsonToSql.storeJsonToDb(apiEntries, "t1");
+      const res = await jsonToSql.storeJsonToDb(apiEntries, tableTarget);
       expect(res[0].json_col.arr).toEqual(apiEntries);
     });
 
     test("view json as table", async () => {
-      const tableSrc = "t1";
-      const tableTarget = "v";
+      const tableSrc = "l1" + currentTime;
+      const tableTarget = "r1" + currentTime;
 
       const expected = [
-        ["DROP TABLE IF EXISTS v"],
+        [`DROP TABLE IF EXISTS ${tableTarget}`],
         [
-          "CREATE TABLE v AS SELECT arr.* FROM t1, JSON_TABLE(json_col, '$.arr[*]' COLUMNS ( from_age int  PATH '$.age',from_nested__name VARCHAR(100)  PATH '$.nested.name') ) arr;",
+          `CREATE TABLE ${tableTarget} AS SELECT arr.* FROM ${tableSrc}, JSON_TABLE(json_col, '$.arr[*]' COLUMNS ( as_age int  PATH '$.age',as_name VARCHAR(100)  PATH '$.nested.name') ) arr;`,
         ],
       ];
 
@@ -213,6 +192,29 @@ describe("jsonToSql", () => {
 
       const sql = jsonToSql.clause.wrapJsonTable(rules, "v2", "v3");
       expect(sql).toBe(expected);
+    });
+  });
+  describe("execute queries", () => {
+    test("storeJsonToDb", async () => {
+      const expected = [{ json_col: { arr: apiEntries } }];
+      const res = await jsonToSql.storeJsonToDb(apiEntries, "t1");
+      expect(res).toEqual(expected);
+    });
+
+    test("createJsonTableFromJsonColumn", async () => {
+      //depend on existing table t1
+      const expected = [
+        { as_age: 2, as_name: "John Smith2" },
+        { as_age: 40, as_name: "Sally Brown" },
+        { as_age: 102, as_name: "John Johnson" },
+      ];
+
+      const obj = await jsonToSql.createJsonTableFromJsonColumn(
+        rules,
+        "tableTarget_" + currentTime,
+        "vtableTarget_" + currentTime
+      );
+      expect(obj).toEqual(expected);
     });
   });
 });

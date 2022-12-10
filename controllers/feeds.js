@@ -100,14 +100,16 @@ module.exports = {
       //   .query()
       //   .findById(feed.id)
       //   .throwIfNotFound();
+      // return res.json(feed);
 
-      const resTableNew = jsonToSql.createJsonTableFromJsonColumn(
+      const resTableNew = await jsonToSql.createJsonTableFromJsonColumn(
         feed.rules,
         feed.json_table_name,
         "v" + feed.json_table_name
       );
       res.json(resTableNew);
     } catch (err) {
+      console.error(err);
       next(err);
     }
   },
@@ -175,7 +177,6 @@ async function update_json_table_and_hash(feed, fetchResult) {
   } else {
     console.log("save data");
     const json_table_name = "t11" + Date.now();
-    await jsonToSql.storeJsonToDb(entries, json_table_name);
 
     if (!_.isEmpty(hash)) {
       await model
@@ -183,5 +184,6 @@ async function update_json_table_and_hash(feed, fetchResult) {
         .updateAndFetchById(id, { hash, json_table_name })
         .throwIfNotFound();
     }
+    await jsonToSql.storeJsonToDb(entries, json_table_name);
   }
 }
